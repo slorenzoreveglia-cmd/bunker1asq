@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1ASQ - Bunker Clandestino v5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0b1426; --card-bg: #162447; --accent: #1f4068;
+            --text-color: #e2e8f0; --metal-color: #9ba4b4; --danger: #e94560;
+            --spy-color: #bc13fe;
+        }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 10px; }
+        #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-color); z-index: 9999; display: flex; align-items: center; justify-content: center; font-family: 'Metal Mania'; font-size: 30px; }
+        .metal-title { font-family: 'Metal Mania', cursive; font-size: clamp(70px, 12vw, 110px); color: var(--metal-color); text-shadow: 4px 4px 0px #000, 8px 8px 15px var(--danger); margin-bottom: 20px; text-align: center; }
+        #loginScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 95vh; }
+        .login-box { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 320px; text-align: center; border: 1px solid var(--accent); }
+        #mainScreen { display: none; max-width: 1000px; margin: auto; }
+        .header-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; gap: 10px; }
+        .notif { padding: 10px; border-radius: 5px; margin-bottom: 5px; font-weight: bold; border-left: 5px solid; font-size: 0.9em; }
+        .notif-blue { background: rgba(31, 64, 104, 0.6); border-color: #3498db; }
+        .notif-spy { background: rgba(188, 19, 254, 0.3); border-color: var(--spy-color); animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .fc { background: var(--card-bg); padding: 15px; border-radius: 10px; }
+        .modal { display: none; position: fixed; z-index: 1000; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card-bg); margin: 5vh auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 420px; border: 2px solid var(--danger); max-height: 85vh; overflow-y: auto; }
+        select, input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; background: #050a14; color: white; border: 1px solid var(--accent); }
+        button { width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-exit { background: #333; color: #ccc; width: auto; font-size: 11px; }
+        .vittima-item { display: flex; justify-content: space-between; align-items: center; background: rgba(233,69,96,0.1); padding: 10px; margin: 5px 0; border-left: 4px solid var(--danger); }
+        .unreliable { border-left-color: var(--spy-color); background: rgba(188,19,254,0.1); }
+    </style>
+</head>
+<body>
+
+    <div id="loadingOverlay">SINCRONIZZAZIONE BUNKER...</div>
+
+    <div id="loginScreen">
+        <div class="metal-title">1ASQ</div>
+        <div class="login-box">
+            <select id="userSelect"></select>
+            <input type="password" id="pinInput" placeholder="PIN (es. 001)">
+            <button class="btn-danger" onclick="login()">ENTRA</button>
+        </div>
+    </div>
+
+    <div id="mainScreen">
+        <div id="notificationArea"></div>
+        <div class="header-tools">
+            <button class="btn-exit" onclick="location.reload()">← EXIT</button>
+            <div id="notifBadge" style="background:var(--danger); padding:5px 12px; border-radius:20px; cursor:pointer;" onclick="showAllNotifs()">💀 <span id="notifCount">0</span></div>
+            <div style="display:flex; gap:5px;">
+                <button id="intelBtn" class="btn-exit" style="background:var(--spy-color); display:none;" onclick="openIntel()">🕵️ LISTA NERA</button>
+                <button class="btn-exit" style="background:var(--accent)" onclick="showChangePin()">🔒 PIN</button>
+            </div>
+        </div>
+        <h2 id="welcomeUser" style="font-family: 'Metal Mania'; color: var(--danger);"></h2>
+        <div id="calendar"></div>
+    </div>
+
+    <div id="examModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" style="color:var(--danger); font-family:'Metal Mania';">Interrogazione</h3>
+            <div id="eventDescDisplay" style="font-size:0.85em; color:#aaa; background:rgba(0,0,0,0.3); padding:10px; border-radius:5px; margin-bottom:10px; display:none;"></div>
+            <div id="adminControls" style="display:none;">
+                <select id="subjectInput">
+                    <option value="Matematica">Matematica</option>
+                    <option value="Fisica">Fisica</option>
+                    <option value="Inglese">Inglese</option>
+                    <option value="Diritto ed economia">Diritto ed economia</option>
+                    <option value="TTRG">TTRG</option>
+                    <option value="Scienze motorie e sportive">Scienze motorie e sportive</option>
+                    <option value="Scienze">Scienze</option>
+                    <option value="Storia">Storia</option>
+                    <option value="Geografia">Geografia</option>
+                    <option value="Religione">Religione</option>
+                    <option value="Informatica">Informatica</option>
+                    <option value="Italiano">Italiano</option>
+                </select>
+                <textarea id="descInput" placeholder="Descrizione (facoltativa)"></textarea>
+                <select id="studentSelect" size="5"></select>
+                <button class="btn-danger" onclick="addVittima()">CONFERMA ALUNNO</button>
+                <button onclick="extractRandom()" style="background:var(--accent); color:white;">ESTRAI CASUALI</button>
+            </div>
+            <div id="userControls" style="display:none;">
+                <button style="background:#00ff7f; color:#0b1426;" onclick="selfVolunteer()">☝ VOLONTARIO</button>
+            </div>
+            <div id="vittimeList" style="margin-top:15px;"></div>
+            <button onclick="closeModal()" style="background:transparent; color:gray;">CHIUDI</button>
+        </div>
+    </div>
+
+    <div id="intelModal" class="modal">
+        <div class="modal-content" style="border-color: var(--spy-color);">
+            <h3 style="color:var(--spy-color); font-family:'Metal Mania';">Intelligence</h3>
+            <div id="intelList"></div>
+            <button onclick="closeIntel()">SALVA E CHIUDI</button>
+        </div>
+    </div>
+
+<script>
+    // --- CONFIGURAZIONE ---
+    const SCRIPT_URL = "https://script.google.com/a/macros/polofermigiorgi.it/s/AKfycbzyMqmYeDw1eoQmSk9ZZCdXrRlqtsx4LSTcZkiTC1TqbOgCMMO_EH4V0LyYNOKzeR5n/exec"; 
+    // ----------------------
+
+    const alunni = ["Antonio Antonazzo", "Ishaq Arar", "Mohammad Arshad", "Dylan Attadia", "Giorgio Avarappattu", "Gianmaria Barsotti", "Lorenzo Barsotti", "Daniele Cardellicchio", "Alessandro Girolami", "Mia Kurumthodath", "Tommaso Marcinno", "Edoardo Marinai", "Davide Morriconi", "Tobia Mugellini", "Tommaso Patricelli", "Valentina Pezzica", "Nicole Pisanu", "Lorenzo Reveglia", "Gabriel Rossi", "Matteo Sforzi", "Alberto Tosi", "Benjamin Woollard", "Hu Yunjin"];
+    const mods = ["Lorenzo Reveglia", "Valentina Pezzica", "Alberto Tosi"];
+    
+    let events = [], pins = {}, blackList = [], currentUser = null, calendar, selectedDate, currentEventId;
+
+    async function init() {
+        const uSelect = document.getElementById('userSelect');
+        const sSelect = document.getElementById('studentSelect');
+        alunni.forEach(a => {
+            uSelect.innerHTML += `<option value="${a}">${a}</option>`;
+            sSelect.innerHTML += `<option value="${a}">${a}</option>`;
+        });
+
+        try {
+            const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "getInitialData"}) });
+            const data = await res.json();
+            events = data.events.map(e => ({...e, vittime: e.vittime ? e.vittime.split(',') : []}));
+            pins = data.pins;
+            blackList = data.blacklist.map(b => b.alunno);
+            document.getElementById('loadingOverlay').style.display = 'none';
+        } catch(e) { alert("Errore connessione database!"); }
+    }
+
+    function login() {
+        const user = document.getElementById('userSelect').value;
+        if (document.getElementById('pinInput').value === pins[user]) {
+            currentUser = user;
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('welcomeUser').innerText = mods.includes(user) ? "COMANDO: "+user : "ALUNNO: "+user;
+            if(mods.includes(user)) document.getElementById('intelBtn').style.display = 'block';
+            renderCalendar(); updateUI();
+        } else { alert("PIN ERRATO"); }
+    }
+
+    function renderCalendar() {
+        calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+            initialView: 'dayGridMonth', locale: 'it', firstDay: 1,
+            events: events,
+            dateClick: (info) => { if(mods.includes(currentUser)) { selectedDate = info.dateStr; currentEventId = null; openModal(); } },
+            eventClick: (info) => { currentEventId = info.event.id; openModal(info.event); }
+        });
+        calendar.render();
+    }
+
+    async function saveEventToCloud(ev) {
+        const dataToSave = {...ev, vittime: ev.vittime.join(',')};
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "saveEvent", event: dataToSave}) });
+    }
+
+    function openModal(event = null) {
+        document.getElementById('examModal').style.display = 'block';
+        const isAdmin = mods.includes(currentUser);
+        document.getElementById('adminControls').style.display = isAdmin ? 'block' : 'none';
+        
+        if (event) {
+            const evData = events.find(e => e.id === event.id);
+            document.getElementById('modalTitle').innerText = evData.title;
+            document.getElementById('eventDescDisplay').innerText = evData.description || "";
+            document.getElementById('eventDescDisplay').style.display = evData.description ? 'block' : 'none';
+            document.getElementById('userControls').style.display = (!isAdmin && !evData.vittime.includes(currentUser)) ? 'block' : 'none';
+            renderVittimeList(evData.vittime);
+        } else {
+            document.getElementById('modalTitle').innerText = "Nuova: " + selectedDate;
+            document.getElementById('vittimeList').innerHTML = "";
+            document.getElementById('userControls').style.display = 'none';
+        }
+    }
+
+    async function addVittima() {
+        const nome = document.getElementById('studentSelect').value;
+        if(!nome) return alert("Seleziona alunno!");
+        const sub = document.getElementById('subjectInput').value;
+        const desc = document.getElementById('descInput').value;
+        
+        if (!currentEventId) {
+            currentEventId = "ID_" + Date.now();
+            const newEv = { id: currentEventId, title: sub, start: selectedDate, vittime: [nome], description: desc };
+            events.push(newEv);
+            await saveEventToCloud(newEv);
+        } else {
+            const ev = events.find(e => e.id === currentEventId);
+            if(!ev.vittime.includes(nome)) ev.vittime.push(nome);
+            ev.description = desc;
+            await saveEventToCloud(ev);
+        }
+        refreshAll();
+    }
+
+    function renderVittimeList(lista) {
+        document.getElementById('vittimeList').innerHTML = lista.map(n => `
+            <div class="vittima-item ${blackList.includes(n) ? 'unreliable' : ''}">
+                <span>💀 ${n} ${blackList.includes(n) ? '⚠️' : ''}</span>
+                ${mods.includes(currentUser) ? `<span style="color:red" onclick="removeVittima('${n}')">X</span>` : ''}
+            </div>
+        `).join('');
+    }
+
+    async function removeVittima(nome) {
+        const ev = events.find(e => e.id === currentEventId);
+        ev.vittime = ev.vittime.filter(v => v !== nome);
+        if (ev.vittime.length === 0) {
+            events = events.filter(e => e.id !== currentEventId);
+            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "deleteEvent", eventId: currentEventId}) });
+            closeModal();
+        } else { await saveEventToCloud(ev); }
+        refreshAll();
+    }
+
+    function openIntel() {
+        document.getElementById('intelList').innerHTML = alunni.map(a => `
+            <div style="display:flex; justify:space-between; padding:5px; border-bottom:1px solid #333;">
+                <span>${a}</span>
+                <input type="checkbox" style="width:20px" ${blackList.includes(a)?'checked':''} onchange="toggleBL('${a}')">
+            </div>
+        `).join('');
+        document.getElementById('intelModal').style.display = 'block';
+    }
+
+    function toggleBL(n) {
+        if(blackList.includes(n)) blackList = blackList.filter(x => x!==n);
+        else blackList.push(n);
+    }
+
+    async function closeIntel() {
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "updateBlacklist", list: blackList}) });
+        document.getElementById('intelModal').style.display = 'none';
+        updateUI();
+    }
+
+    function updateUI() {
+        const area = document.getElementById('notificationArea');
+        area.innerHTML = "";
+        const tom = new Date(); tom.setDate(tom.getDate()+1);
+        const tomStr = tom.toISOString().split('T')[0];
+        
+        events.forEach(ev => {
+            if(ev.start === tomStr) {
+                area.innerHTML += `<div class="notif notif-blue">📡 DOMANI: ${ev.title}</div>`;
+                const danger = ev.vittime.filter(v => blackList.includes(v));
+                if(danger.length > 0) area.innerHTML += `<div class="notif notif-spy">⚠️ ALLERTA: ${danger[0]} è in lista, STUDIA!</div>`;
+            }
+        });
+        const myCount = events.filter(e => e.vittime.includes(currentUser)).length;
+        document.getElementById('notifCount').innerText = myCount;
+    }
+
+    function refreshAll() { calendar.removeAllEvents(); calendar.addEventSource(events); updateUI(); renderVittimeList(events.find(e=>e.id===currentEventId).vittime); }
+    function closeModal() { document.getElementById('examModal').style.display = 'none'; }
+    init();
+</script>
+</body>
+</html>
