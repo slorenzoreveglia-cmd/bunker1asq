@@ -2,496 +2,292 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>1ASQ - BUNKER CLANDESTINO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1ASQ - Bunker Clandestino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- GRAFICA ORIGINALE RIPRISTINATA --- */
         :root {
-            --bg-color: #000033; /* Blu Scuro Profondo */
-            --text-main: #00ff00; /* Verde Neon */
-            --accent-horror: #ff0000; /* Rosso Sangue */
-            --event-int-bg: #440000; /* Sfondo Interrogazioni */
-            --event-ver-bg: #000066; /* Sfondo Verifiche */
+            --bg-dark: #0d1117;
+            --panel-bg: #161b22;
+            --accent-red: #e94560;
+            --notif-blue: #3498db;
+            --notif-purple: #9b59b6;
+            --text-gray: #c9d1d9;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Courier New', Courier, monospace; /* Font tecnico */
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 10px;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        h1 {
-            font-family: 'Nosifer', cursive;
-            color: var(--accent-horror);
-            text-align: center;
-            font-size: 2rem;
-            text-shadow: 0 0 10px #f00;
-            margin-bottom: 10px;
-        }
+        /* --- LOGIN --- */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
+        .iasq-logo { font-family: 'Creepster', cursive; font-size: 80px; text-shadow: 0 0 20px rgba(233, 69, 96, 0.8); margin-bottom: 20px; }
+        .login-card { background: #1a1e2e; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 320px; border: 1px solid #2a2e3e; }
+        
+        select, input { width: 100%; padding: 12px; margin: 10px 0; background: #0f111a; border: 1px solid #2a2e3e; color: white; border-radius: 5px; box-sizing: border-box; }
+        .btn-main { background: var(--accent-red); color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 
-        /* --- LOGIN SCREEN --- */
-        #login-screen {
-            text-align: center;
-            padding-top: 100px;
+        /* --- MAIN INTERFACE --- */
+        #bunker-screen { width: 100%; max-width: 1000px; padding: 20px; box-sizing: border-box; display: none; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
+        .skull-notif { 
+            cursor: pointer; background: rgba(233, 69, 96, 0.1); border: 1px solid var(--accent-red); 
+            padding: 8px 15px; border-radius: 20px; font-weight: bold; transition: 0.3s;
         }
+        .skull-notif:hover { background: rgba(233, 69, 96, 0.3); }
 
-        .login-box {
-            background: #000;
-            border: 3px solid var(--accent-horror);
-            padding: 30px;
-            display: inline-block;
-            box-shadow: 0 0 20px #f00;
-        }
+        .alunno-tag { font-family: 'Creepster', cursive; color: var(--accent-red); font-size: 28px; margin: 15px 0; }
 
-        /* --- CALENDARIO METAL --- */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        /* --- CALENDARIO --- */
+        .calendar-container { background: #1a1e2e; padding: 20px; border-radius: 10px; border: 1px solid #2a2e3e; }
+        .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { color: var(--text-gray); padding: 10px; text-transform: uppercase; font-size: 0.8rem; }
+        td { height: 110px; border: 1px solid #2a2e3e; vertical-align: top; padding: 5px; position: relative; cursor: pointer; }
+        td:hover:not(.empty) { background: #21262d; }
+        td.past { background: #0d1117; color: #484f58; cursor: default; }
+        td.today { border: 2px solid var(--accent-red); background: rgba(233, 69, 96, 0.05); }
 
-        .day {
-            background: #000022;
-            border: 1px solid #004400;
-            min-height: 100px;
-            padding: 5px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s;
+        .day-num { float: right; font-weight: bold; }
+        
+        /* EVENTI NEL CALENDARIO */
+        .event-tag { 
+            font-size: 10px; padding: 3px 5px; border-radius: 3px; margin-top: 22px; 
+            font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
+        .tag-int { background: var(--accent-red); color: white; }
+        .tag-ver { background: var(--notif-blue); color: white; }
+        .tag-altro { background: #d4af37; color: black; }
 
-        .day:hover:not(.past) {
-            background: #000044;
-            border-color: var(--text-main);
+        /* --- MODALI --- */
+        .modal { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: #1a1e2e; border: 2px solid var(--accent-red); padding: 25px; 
+            border-radius: 15px; z-index: 1000; width: 90%; max-width: 400px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
-
-        .day.past {
-            background: #000011;
-            color: #004400;
-            cursor: default;
-        }
-
-        .day.today {
-            border: 2px solid var(--text-main);
-            box-shadow: 0 0 10px var(--text-main);
-        }
-
-        .day-number {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* --- EVENTI GRAFICA --- */
-        .event {
-            font-size: 0.7rem;
-            margin-top: 4px;
-            padding: 3px;
-            border-radius: 3px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .event.interrogazione {
-            background-color: var(--event-int-bg);
-            border-left: 3px solid #f00;
-            color: #ff9999;
-        }
-
-        .event.verifica {
-            background-color: var(--event-ver-bg);
-            border-left: 3px solid #00f;
-            color: #9999ff;
-        }
-
-        /* --- TESCHIO NOTIFICHE --- */
-        #notif-bunker {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            font-size: 2.5rem;
-            cursor: pointer;
-            z-index: 1000;
-            text-shadow: 0 0 10px #f00;
-        }
-
-        #notif-count {
-            background: red;
-            color: white;
-            border-radius: 50%;
-            padding: 2px 7px;
-            font-size: 14px;
-            position: absolute;
-            top: 0;
-            right: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        /* --- MODALI E INTERFACCIA --- */
-        .modal, .menu-tab {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #000;
-            border: 3px solid var(--text-main);
-            padding: 20px;
-            z-index: 2000;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 0 30px #0f0;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1500;
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: #001100;
-            color: var(--text-main);
-            border: 1px solid var(--text-main);
-            font-family: 'Courier New', monospace;
-        }
-
-        button.metal-btn {
-            background: #222;
-            border: 2px solid #555;
-            color: #aaa;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        button.metal-btn:hover {
-            background: #333;
-            color: #fff;
-        }
-
-        button.danger-btn {
-            background: var(--accent-horror);
-            color: white;
-            font-family: 'Creepster', cursive;
-            font-size: 1.3rem;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* Responsive Mobile */
-        @media (max-width: 600px) {
-            .calendar-grid { gap: 2px; }
-            .day { min-height: 70px; font-size: 0.6rem; padding: 2px; }
-            h1 { font-size: 1.4rem; }
-            #notif-bunker { font-size: 1.8rem; top: 10px; right: 10px; }
-        }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 900; }
     </style>
 </head>
 <body>
 
-    <div id="overlay" class="overlay" onclick="closeAll()"></div>
-
-    <div id="notif-bunker" onclick="toggleNotifMenu()">
-        💀 <span id="notif-count">0</span>
-    </div>
-
-    <div id="notif-menu" class="menu-tab">
-        <h3 style="color:red; text-align:center;">ALLERTA RILEVATI</h3>
-        <div id="notif-list" style="max-height:300px; overflow-y:auto; font-size:0.8rem;">
-            </div>
-        <button class="metal-btn" onclick="closeAll()">CHIUDI</button>
-    </div>
-
     <div id="login-screen">
-        <h1>BUNKER 1ASQ</h1>
-        <div class="login-box">
-            <input type="text" id="login-name" placeholder="NOME COGNOME ESATTO">
-            <input type="password" id="login-pin" placeholder="PIN (3 CIFRE)">
-            <button class="danger-btn" onclick="tryLogin()">ACCEDI AL DATABASE</button>
-            <p id="login-err" style="color:red; display:none;">IDENTITÀ NON CONFERMATA.</p>
+        <div class="iasq-logo">IASQ</div>
+        <div class="login-card">
+            <select id="user-select"><option>Caricamento...</option></select>
+            <input type="password" id="pin-input" placeholder="PIN SEGRETO">
+            <button class="btn-main" onclick="handleLogin()">ENTRA NEL BUNKER</button>
         </div>
     </div>
 
-    <div id="bunker-screen" style="display:none;">
-        <h1>BUNKER OPERATIVO</h1>
-        <p style="text-align:center;">
-            Soldato: <span id="user-display" style="color:white"></span> | 
-            <a href="#" onclick="showChangePin()" style="color:red">Cambia PIN</a> | 
-            <a href="#" onclick="logout()" style="color:#555">Logout</a>
-        </p>
-        <div id="calendar" class="calendar-grid"></div>
-    </div>
-
-    <div id="modal-details" class="modal">
-        <h3 id="details-date" style="color:white; text-align:center;"></h3>
-        <div id="details-content" style="border:1px solid #333; padding:10px; margin-bottom:10px; background:#000;">
+    <div id="bunker-screen">
+        <div class="header-bar">
+            <button onclick="location.reload()" style="background:#21262d; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">ESCI</button>
+            <div class="skull-notif" onclick="openDestini()">
+                💀 <span id="notif-count">0</span> +
             </div>
-        <button class="danger-btn" onclick="openNewEventForm()">NUOVO INSERIMENTO 📝</button>
-        <button class="metal-btn" onclick="closeAll()">CHIUDI</button>
+            <button onclick="openPinModal()" style="background:#21262d; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">CAMBIA PIN</button>
+        </div>
+
+        <div class="alunno-tag">SOLDATO: <span id="current-user-name">---</span></div>
+
+        <div class="calendar-container">
+            <div class="cal-nav">
+                <button onclick="changeMonth(-1)" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">&lt;</button>
+                <h2 id="month-display" style="text-transform: capitalize;">febbraio 2026</h2>
+                <button onclick="changeMonth(1)" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">&gt;</button>
+            </div>
+            <table>
+                <thead><tr><th>lun</th><th>mar</th><th>mer</th><th>gio</th><th>ven</th><th>sab</th><th>dom</th></tr></thead>
+                <tbody id="calendar-body"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div id="modal-form" class="modal">
-        <h2 id="form-title" style="text-align:center;"></h2>
-        <select id="f-materia">
+    <div id="modal-destini" class="modal">
+        <h2 style="font-family:'Creepster'; color:var(--accent-red); margin-top:0;">I TUOI DESTINI</h2>
+        <div id="destini-list" style="max-height: 300px; overflow-y: auto;"></div>
+        <button class="btn-main" onclick="closeModals()" style="background:#21262d; margin-top:15px;">CHIUDI</button>
+    </div>
+
+    <div id="modal-insert" class="modal">
+        <h2 id="insert-date-title" style="margin-top:0; font-size:1.2rem;"></h2>
+        <select id="ins-tipo" onchange="toggleInsMode()">
+            <option value="interrogazione">Interrogazione 📝</option>
+            <option value="verifica">Verifica 📚</option>
+        </select>
+        <select id="ins-materia" onchange="checkOther(this.value)">
             <option value="Italiano">Italiano</option>
             <option value="Matematica">Matematica</option>
             <option value="Inglese">Inglese</option>
             <option value="TTRG">TTRG</option>
-            <option value="Diritto">Diritto</option>
-            <option value="Scienze">Scienze</option>
-            <option value="Fisica">Fisica</option>
-            <option value="Chimica">Chimica</option>
+            <option value="Altro">-- ALTRO --</option>
         </select>
-        <select id="f-tipo">
-            <option value="interrogazione">Interrogazione 📝</option>
-            <option value="verifica">Verifica 📚</option>
-        </select>
-        <select id="f-alunno"></select> <input type="text" id="f-desc" placeholder="Descrizione/Argomenti (opzionale)">
-        <button class="danger-btn" onclick="submitEvent()">CONFERMA E SALVA</button>
-        <button class="metal-btn" onclick="closeAll()">ANNULLA</button>
+        <input type="text" id="ins-altro" placeholder="Nome materia..." style="display:none;">
+        <div id="ins-student-box">
+            <select id="ins-alunno"></select>
+        </div>
+        <input type="text" id="ins-desc" placeholder="Descrizione (facoltativa)">
+        <button class="btn-main" onclick="saveToDb()">SALVA NEL DATABASE</button>
+        <button class="btn-main" onclick="closeModals()" style="background:#21262d; margin-top:10px;">ANNULLA</button>
     </div>
 
-    <div id="modal-pin" class="modal">
-        <h3>CAMBIA IL TUO PIN</h3>
-        <input type="password" id="old-pin" placeholder="Vecchio PIN">
-        <input type="password" id="new-pin" placeholder="Nuovo PIN (3 cifre)" maxlength="3">
-        <button class="danger-btn" onclick="confirmChangePin()">AGGIORNA PIN</button>
-        <button class="metal-btn" onclick="closeAll()">ANNULLA</button>
-    </div>
+    <div id="overlay" class="overlay" onclick="closeModals()"></div>
 
     <script>
-        // --- CONFIGURAZIONE ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxBD-5Cc2nVUPTTdM2if2jRvNfezWklU1uCFOENzPWDyVMKL1_BfRUMqzqfwokgQ8gyQ/exec";
-        
-        // --- STATO ---
-        let db = { events: [], pins: {}, blacklist: [] };
-        let currentUser = localStorage.getItem('bunker_user');
-        let selectedDateStr = null;
+        let db = { events: [], pins: {} };
+        let viewDate = new Date();
+        let selectedDate = null;
 
-        // --- INIZIALIZZAZIONE ---
         window.onload = async () => {
-            if (currentUser) {
-                await loadBunkerData();
-            }
+            const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action:'getInitialData'}) });
+            db = await res.json();
+            
+            const sel = document.getElementById('user-select');
+            sel.innerHTML = '<option value="">Chi sei?</option>';
+            Object.keys(db.pins).sort().forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
         };
 
-        async function tryLogin() {
-            const name = document.getElementById('login-name').value.trim();
-            const pin = document.getElementById('login-pin').value.trim();
-            
-            // Scarica i dati per verificare
-            await fetchDb();
-
-            if (db.pins[name] && db.pins[name] === pin) {
-                localStorage.setItem('bunker_user', name);
-                currentUser = name;
-                await loadBunkerData();
-            } else {
-                document.getElementById('login-err').style.display = 'block';
-            }
+        function handleLogin() {
+            const user = document.getElementById('user-select').value;
+            const pin = document.getElementById('pin-input').value;
+            if (db.pins[user] === pin) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('bunker-screen').style.display = 'block';
+                document.getElementById('current-user-name').innerText = user.toUpperCase();
+                renderCalendar();
+            } else { alert("ACCESSO NEGATO. PIN ERRATO."); }
         }
 
-        async function loadBunkerData() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('bunker-screen').style.display = 'block';
-            document.getElementById('user-display').innerText = currentUser;
-            await fetchDb();
-            renderCalendar();
-            updateNotifications();
-        }
-
-        async function fetchDb() {
-            try {
-                const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: 'getInitialData'}) });
-                db = await res.json();
-            } catch(e) { alert("ERRORE CONNESSIONE DATABASE."); }
-        }
-
-        // --- CALENDARIO & DATI ---
         function renderCalendar() {
-            const container = document.getElementById('calendar');
-            container.innerHTML = '';
-            
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const body = document.getElementById('calendar-body');
+            body.innerHTML = '';
+            const year = viewDate.getFullYear();
+            const month = viewDate.getMonth();
+            const today = new Date();
+            today.setHours(0,0,0,0);
 
-            // Correzione Bug Date: Troviamo il lunedì della settimana corrente
-            let currentDay = new Date(today);
-            let dayOfWeek = today.getDay(); // 0=Dom, 1=Lun...
-            let diffToMonday = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
-            currentDay.setDate(today.getDate() + diffToMonday);
+            document.getElementById('month-display').innerText = new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' }).format(viewDate);
 
-            // Generiamo 35 giorni (5 settimane)
-            for (let i = 0; i < 35; i++) {
-                const d = new Date(currentDay);
-                const isPast = d < today;
-                const isToday = d.getTime() === today.getTime();
-                const dStr = d.toISOString().split('T')[0]; // Formato YYYY-MM-DD esatto
+            let firstDay = new Date(year, month, 1).getDay();
+            firstDay = (firstDay === 0) ? 6 : firstDay - 1;
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-                const dayDiv = document.createElement('div');
-                dayDiv.className = `day ${isPast ? 'past' : ''} ${isToday ? 'today' : ''}`;
-                dayDiv.innerHTML = `<span class="day-number">${d.getDate()}</span> ${d.toLocaleString('it-IT', {month:'short'})}`;
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    let cell = document.createElement('td');
+                    if (i === 0 && j < firstDay) {
+                        cell.classList.add('empty');
+                    } else if (date <= daysInMonth) {
+                        const cellDate = new Date(year, month, date);
+                        const dStr = cellDate.toISOString().split('T')[0];
+                        
+                        if (cellDate < today) cell.classList.add('past');
+                        if (cellDate.getTime() === today.getTime()) cell.classList.add('today');
 
-                // Mostra Eventi del giorno
-                db.events.filter(e => e.data.startsWith(dStr)).forEach(e => {
-                    const evDiv = document.createElement('div');
-                    evDiv.className = `event ${e.tipo}`;
-                    evDiv.innerText = `${e.tipo === 'verifica' ? '📚' : '📝'} ${e.materia.toUpperCase()}`;
-                    dayDiv.appendChild(evDiv);
-                });
+                        cell.innerHTML = `<span class="day-num">${date}</span>`;
+                        
+                        // Rendering Eventi
+                        db.events.filter(e => e.data === dStr).forEach(e => {
+                            const typeClass = e.tipo === 'verifica' ? 'tag-ver' : (e.materia_special ? 'tag-altro' : 'tag-int');
+                            cell.innerHTML += `<div class="event-tag ${typeClass}">${e.materia.toUpperCase()}</div>`;
+                        });
 
-                if (!isPast) {
-                    dayDiv.onclick = () => openDayDetails(dStr);
+                        if (cellDate >= today) {
+                            cell.onclick = () => openInsert(dStr);
+                        }
+                        date++;
+                    }
+                    row.appendChild(cell);
                 }
-                
-                container.appendChild(dayDiv);
-                currentDay.setDate(currentDay.getDate() + 1); // Passa al giorno dopo
+                body.appendChild(row);
+                if (date > daysInMonth) break;
             }
+            updateSkull();
         }
 
-        // --- INTERFACCIA E MODALI ---
-        function openDayDetails(dateStr) {
-            selectedDateStr = dateStr;
-            document.getElementById('details-date').innerText = "RAPPORTO DEL " + dateStr;
-            
-            const content = document.getElementById('details-content');
-            content.innerHTML = '';
-            
-            const events = db.events.filter(e => e.data.startsWith(dateStr));
-            
-            if (events.length === 0) {
-                content.innerHTML = "<p style='color:#555; text-align:center;'>Nessuna attività rilevata.</p>";
-            } else {
-                events.forEach(e => {
-                    content.innerHTML += `
-                        <div style="margin-bottom:10px; border-bottom:1px solid #222; padding-bottom:5px;">
-                            <b style="color:${e.tipo === 'verifica' ? '#9999ff' : '#ff9999'}">${e.materia.toUpperCase()} (${e.tipo})</b><br>
-                            Soldato: ${e.alunno}<br>
-                            Note: ${e.desc || 'Nessuna'}
-                        </div>
-                    `;
-                });
-            }
-            
-            showModal('modal-details');
+        function openInsert(date) {
+            selectedDate = date;
+            document.getElementById('insert-date-title').innerText = "DATA SELEZIONATA: " + date;
+            const sel = document.getElementById('ins-alunno');
+            sel.innerHTML = '';
+            Object.keys(db.pins).sort().forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
+            document.getElementById('modal-insert').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
         }
 
-        function openNewEventForm() {
-            closeAll();
-            document.getElementById('form-title').innerText = "INSERIMENTO DEL " + selectedDateStr;
-            
-            // Popola lista alunni da DB PIN
-            const sel = document.getElementById('f-alunno');
-            sel.innerHTML = '<option value="TUTTA LA CLASSE">-- TUTTA LA CLASSE --</option>';
-            Object.keys(db.pins).sort().forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name; opt.innerText = name;
-                sel.appendChild(opt);
-            });
-            
-            showModal('modal-form');
-        }
+        async function saveToDb() {
+            const btn = document.querySelector('#modal-insert .btn-main');
+            btn.innerText = "SINCRO IN CORSO...";
+            btn.disabled = true;
 
-        async function submitEvent() {
+            let mat = document.getElementById('ins-materia').value;
+            let special = false;
+            if (mat === 'Altro') { mat = document.getElementById('ins-altro').value; special = true; }
+
             const payload = {
                 action: 'saveEvent',
                 event: {
                     id: Date.now(),
-                    data: selectedDateStr, // Invia la data esatta YYYY-MM-DD
-                    materia: document.getElementById('f-materia').value,
-                    tipo: document.getElementById('f-tipo').value,
-                    alunno: document.getElementById('f-alunno').value,
-                    desc: document.getElementById('f-desc').value
+                    data: selectedDate,
+                    materia: mat,
+                    tipo: document.getElementById('ins-tipo').value,
+                    alunno: document.getElementById('ins-tipo').value === 'verifica' ? "TUTTA LA CLASSE" : document.getElementById('ins-alunno').value,
+                    desc: document.getElementById('ins-desc').value,
+                    materia_special: special
                 }
             };
-            
-            closeAll();
-            alert("INVIO DATI... IL CALENDARIO SI AGGIORNERÀ.");
-            
+
             await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
             location.reload();
         }
 
-        // --- NOTIFICHE ---
-        function updateNotifications() {
-            const today = new Date().setHours(0,0,0,0);
-            const futureEvents = db.events.filter(e => new Date(e.data) >= today);
-            document.getElementById('notif-count').innerText = futureEvents.length;
-        }
-
-        function toggleNotifMenu() {
-            const menu = document.getElementById('notif-menu');
-            const list = document.getElementById('notif-list');
+        function openDestini() {
+            const list = document.getElementById('destini-list');
             list.innerHTML = '';
+            const today = new Date().toISOString().split('T')[0];
             
-            const today = new Date().setHours(0,0,0,0);
-            const futureEvents = db.events.filter(e => new Date(e.data) >= today)
-                .sort((a,b) => new Date(a.data) - new Date(b.data));
-            
-            if (futureEvents.length === 0) {
-                list.innerHTML = "<p style='text-align:center;'>Nessun pericolo imminente.</p>";
-            } else {
-                futureEvents.forEach(e => {
-                    const daysDiff = Math.ceil((new Date(e.data) - today) / (1000 * 60 * 60 * 24));
-                    
-                    // Colori Notifiche Originali
-                    let color = 'white'; // Oltre 7 giorni
-                    if (daysDiff <= 2) color = 'red'; // Urgenti
-                    else if (daysDiff <= 5) color = '#3498db'; // Blu (intermedie)
-                    else if (daysDiff <= 7) color = '#9b59b6'; // Viola (lontane)
+            db.events.filter(e => e.data >= today).sort((a,b) => a.data.localeCompare(b.data)).forEach(e => {
+                const diff = Math.floor((new Date(e.data) - new Date(today)) / (86400000));
+                let color = 'white';
+                if (diff <= 2) color = 'var(--accent-red)';
+                else if (diff <= 5) color = 'var(--notif-blue)';
+                else if (diff <= 7) color = 'var(--notif-purple)';
 
-                    list.innerHTML += `
-                        <div style="color:${color}; margin-bottom:8px; border-bottom:1px solid #222;">
-                            <b>${e.data}</b>: ${e.materia.toUpperCase()} (${e.alunno})
-                        </div>
-                    `;
-                });
-            }
-            
-            showModal('notif-menu');
-        }
-
-        // --- CAMBIA PIN ---
-        function showChangePin() { showModal('modal-pin'); }
-        async function confirmChangePin() {
-            const oldP = document.getElementById('old-pin').value;
-            const newP = document.getElementById('new-pin').value;
-            
-            if (newP.length !== 3 || isNaN(newP)) { alert("IL PIN DEVE ESSERE DI 3 CIFRE."); return; }
-            
-            const payload = { action: 'updatePin', user: currentUser, oldPin: oldP, newPin: newP };
-            closeAll();
-            
-            const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            const text = await res.text();
-            alert(text === "Pin Updated" ? "PIN AGGIORNATO CON SUCCESSO." : "ERRORE: PIN VECCHIO ERRATO.");
-        }
-
-        // --- UTILS ---
-        function showModal(id) {
+                list.innerHTML += `
+                    <div style="padding:10px; border-bottom:1px solid #2a2e3e; color:${color}">
+                        <b>${e.data}</b> - ${e.materia.toUpperCase()}<br>
+                        <small>${e.alunno} (${e.desc || 'No desc'})</small>
+                    </div>`;
+            });
+            document.getElementById('modal-destini').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
-            document.getElementById(id).style.display = 'block';
         }
 
-        function closeAll() {
-            document.querySelectorAll('.modal, .menu-tab, .overlay').forEach(e => e.style.display = 'none');
+        function updateSkull() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('notif-count').innerText = db.events.filter(e => e.data >= today).length;
         }
 
-        function logout() { localStorage.removeItem('bunker_user'); location.reload(); }
+        function toggleInsMode() {
+            document.getElementById('ins-student-box').style.display = 
+                document.getElementById('ins-tipo').value === 'verifica' ? 'none' : 'block';
+        }
+
+        function checkOther(v) { document.getElementById('ins-altro').style.display = v === 'Altro' ? 'block' : 'none'; }
+        function changeMonth(v) { viewDate.setMonth(viewDate.getMonth() + v); renderCalendar(); }
+        function closeModals() { document.querySelectorAll('.modal, .overlay').forEach(m => m.style.display = 'none'); }
     </script>
 </body>
 </html>
