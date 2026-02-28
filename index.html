@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1ASQ - BUNKER</title>
+    <title>1ASQ - BUNKER CLANDESTINO</title>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #0d111a;
             --panel-bg: #161b2b;
             --accent-red: #e94560;
+            --accent-blue: #3498db;
             --border-blue: #242c42;
             --text-gray: #8b949e;
+            --success-green: #2ecc71;
         }
 
         body {
@@ -23,9 +25,10 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* --- LOGIN (Bello come in Login_bello.png) --- */
+        /* --- LOGIN (Bello) --- */
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -53,9 +56,9 @@
             text-align: center;
         }
 
-        select, input {
+        select, input, textarea {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             margin: 10px 0;
             background: #0d1117;
             border: 1px solid var(--border-blue);
@@ -65,11 +68,11 @@
             box-sizing: border-box;
         }
 
-        .btn-accedi {
+        .btn-main {
             background: var(--accent-red);
             color: white;
             border: none;
-            padding: 18px;
+            padding: 15px;
             width: 100%;
             border-radius: 8px;
             font-weight: bold;
@@ -77,10 +80,10 @@
             text-transform: uppercase;
             transition: 0.3s;
         }
-        .btn-accedi:hover { background: #ff2e63; transform: scale(1.02); }
+        .btn-main:hover { background: #ff2e63; transform: scale(1.02); }
 
-        /* --- CALENDARIO (Bello come in calendario_bello.png) --- */
-        #bunker-screen { display: none; width: 100%; padding: 20px; max-width: 1000px; }
+        /* --- INTERFACCIA BUNKER --- */
+        #bunker-screen { display: none; width: 100%; padding: 20px; max-width: 1100px; }
 
         .header-top {
             display: flex;
@@ -102,14 +105,16 @@
             font-family: 'Creepster', cursive;
             font-size: 32px;
             color: var(--accent-red);
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
+        /* --- CALENDARIO (REPLICATO calendario_bello.png) --- */
         .calendar-wrap {
             background: var(--panel-bg);
             border-radius: 15px;
             border: 1px solid var(--border-blue);
             padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .month-header {
@@ -120,15 +125,16 @@
         }
 
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { color: var(--text-gray); padding: 10px; font-size: 12px; text-transform: lowercase; }
-        td { height: 100px; border: 0.5px solid var(--border-blue); vertical-align: top; padding: 5px; }
+        th { color: var(--text-gray); padding: 10px; font-size: 13px; text-transform: lowercase; font-weight: normal; }
+        td { height: 110px; border: 0.5px solid var(--border-blue); vertical-align: top; padding: 5px; cursor: pointer; transition: 0.2s; }
+        td:hover:not(.past) { background: rgba(255,255,255,0.03); }
+        td.past { background: rgba(0,0,0,0.2); cursor: default; }
+        td.today { border: 1.5px solid var(--accent-red); background: rgba(233, 69, 96, 0.05); }
         
-        .day-label { float: right; font-size: 12px; color: var(--text-gray); }
+        .day-label { float: right; font-size: 12px; color: var(--text-gray); margin: 3px; }
 
-        .event-bar {
-            background: var(--accent-red);
-            color: white;
-            font-size: 10px;
+        .event-tag {
+            font-size: 9px;
             padding: 3px 6px;
             border-radius: 4px;
             margin-top: 20px;
@@ -136,10 +142,15 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: block;
+            margin-bottom: 2px;
         }
+        .tag-interrogazione { background: var(--accent-red); color: white; }
+        .tag-verifica { background: var(--accent-blue); color: white; }
+        .tag-altro { background: #f1c40f; color: black; }
 
-        /* --- MODALE (Come in notifica_bella.png) --- */
-        #modal-overlay {
+        /* --- MODALI (Replicati notifica_bella.png) --- */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -148,17 +159,33 @@
             z-index: 999;
         }
 
-        #destini-modal {
+        .modal-box {
             display: none;
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             background: var(--panel-bg);
             border: 2px solid var(--accent-red);
-            width: 90%; max-width: 400px;
-            padding: 30px;
+            width: 90%; max-width: 450px;
+            padding: 25px;
             border-radius: 20px;
             z-index: 1000;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title { font-family: 'Creepster', cursive; color: var(--accent-red); margin-top: 0; font-size: 28px; }
+        
+        .section-label { font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-top: 15px; display: block; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .random-box { 
+            background: rgba(0,0,0,0.2); 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px dashed var(--border-blue);
+            margin-top: 10px;
         }
 
         .notif-item {
@@ -176,8 +203,8 @@
         <div class="iasq-logo">IASQ</div>
         <div class="login-card">
             <select id="user-select"><option>Inizializzazione Bunker...</option></select>
-            <input type="password" id="pin-input" placeholder="PIN">
-            <button class="btn-accedi" onclick="tryLogin()">ACCEDI</button>
+            <input type="password" id="pin-input" placeholder="PIN SEGRETO">
+            <button class="btn-main" onclick="tryLogin()">ACCEDI AL SISTEMA</button>
         </div>
     </div>
 
@@ -185,10 +212,10 @@
         <div class="header-top">
             <button onclick="location.reload()" style="background:none; border:none; color:white; cursor:pointer;">← EXIT</button>
             <div class="skull-notif" onclick="openDestini()">💀 <span id="skull-count">0</span> +</div>
-            <button style="background:#242c42; border:none; color:white; padding:5px 10px; border-radius:5px;">👤 PIN</button>
+            <button style="background:#242c42; border:none; color:white; padding:5px 12px; border-radius:5px; font-size:12px;">👤 PIN</button>
         </div>
 
-        <div class="alunno-title">ALUNNO: <span id="current-name"></span></div>
+        <div class="alunno-title">SOLDATO: <span id="current-name"></span></div>
 
         <div class="calendar-wrap">
             <div class="month-header">
@@ -205,50 +232,91 @@
         </div>
     </div>
 
-    <div id="modal-overlay" onclick="closeDestini()"></div>
-    <div id="destini-modal">
-        <h2 style="font-family:'Creepster'; color:var(--accent-red); margin:0 0 20px 0;">I TUOI DESTINI</h2>
+    <div id="modal-add-overlay" class="modal-overlay" onclick="closeAdd()"></div>
+    <div id="modal-add" class="modal-box">
+        <h2 class="modal-title">NUOVO DESTINO</h2>
+        <p id="selected-date-label" style="font-size:12px; color:var(--text-gray); margin-bottom:20px;"></p>
+        
+        <span class="section-label">Tipo Evento</span>
+        <select id="in-tipo" onchange="toggleTipo()">
+            <option value="interrogazione">Interrogazione 📝</option>
+            <option value="verifica">Verifica 📚</option>
+        </select>
+
+        <span class="section-label">Materia</span>
+        <select id="in-materia" onchange="checkAltro(this.value)">
+            <option value="Matematica">Matematica</option>
+            <option value="Fisica">Fisica</option>
+            <option value="Inglese">Inglese</option>
+            <option value="Diritto">Diritto</option>
+            <option value="TTRG">TTRG</option>
+            <option value="Scienze motorie">Scienze motorie</option>
+            <option value="Scienze">Scienze</option>
+            <option value="Storia">Storia</option>
+            <option value="Geografia">Geografia</option>
+            <option value="Religione">Religione</option>
+            <option value="Informatica">Informatica</option>
+            <option value="Altro">-- ALTRO --</option>
+        </select>
+        <input type="text" id="in-materia-altro" placeholder="Titolo della materia..." style="display:none;">
+
+        <div id="box-interrogati">
+            <span class="section-label">Chi sarà interrogato?</span>
+            <div class="grid-2">
+                <select id="sel-alunno">
+                    <option value="">Seleziona Alunno</option>
+                </select>
+                <div class="random-box">
+                    <input type="number" id="rand-num" placeholder="Q.tà" style="margin:0; padding:8px;" min="1" max="10">
+                    <button onclick="estraiCasuale()" style="width:100%; margin-top:5px; font-size:10px; padding:5px; background:var(--accent-blue); border:none; color:white; border-radius:4px; cursor:pointer;">ESTRAI</button>
+                </div>
+            </div>
+            <textarea id="in-final-alunni" placeholder="Alunni selezionati..." rows="2"></textarea>
+        </div>
+
+        <span class="section-label">Descrizione (Facoltativa)</span>
+        <textarea id="in-desc" placeholder="Dettagli sulla verifica/interrogazione..." rows="2"></textarea>
+
+        <div class="grid-2" style="margin-top:20px;">
+            <button class="btn-main" id="btn-save" onclick="salvaEvento()">APPLICA</button>
+            <button class="btn-main" style="background:#242c42;" onclick="closeAdd()">ANNULLA</button>
+        </div>
+    </div>
+
+    <div id="modal-notif-overlay" class="modal-overlay" onclick="closeDestini()"></div>
+    <div id="modal-notif" class="modal-box">
+        <h2 class="modal-title">I TUOI DESTINI</h2>
         <div id="destini-content"></div>
-        <button class="btn-accedi" style="background:#242c42; margin-top:20px;" onclick="closeDestini()">CHIUDI</button>
+        <button class="btn-main" style="background:#242c42; margin-top:20px;" onclick="closeDestini()">CHIUDI</button>
     </div>
 
     <script>
-        // *** IMPORTANTE: USA IL TUO URL QUI ***
+        // *** CONFIGURAZIONE ***
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxBD-5Cc2nVUPTTdM2if2jRvNfezWklU1uCFOENzPWDyVMKL1_BfRUMqzqfwokgQ8gyQ/exec";
         
         let db = { events: [], pins: {} };
         let currentMonthDate = new Date();
+        let selectedDateStr = "";
 
         window.onload = async () => {
-            const sel = document.getElementById('user-select');
+            const selLogin = document.getElementById('user-select');
+            const selAdd = document.getElementById('sel-alunno');
             try {
-                // Proviamo con GET per evitare l'errore 405
                 const response = await fetch(`${SCRIPT_URL}?action=getInitialData`);
                 db = await response.json();
                 
-                sel.innerHTML = '<option value="">Seleziona Alunno</option>';
-                if (db.pins) {
-                    Object.keys(db.pins).sort().forEach(name => {
-                        sel.innerHTML += `<option value="${name}">${name}</option>`;
-                    });
-                }
+                const alunni = Object.keys(db.pins).sort();
+                selLogin.innerHTML = '<option value="">Seleziona Alunno</option>';
+                selAdd.innerHTML = '<option value="">Seleziona Alunno</option>';
+                
+                alunni.forEach(name => {
+                    const opt = `<option value="${name}">${name}</option>`;
+                    selLogin.innerHTML += opt;
+                    selAdd.innerHTML += opt;
+                });
             } catch (e) {
-                console.log("Tentativo GET fallito, provo POST...");
-                // Se il GET fallisce, proviamo il POST (alcuni script sono configurati così)
-                try {
-                    const resPost = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'getInitialData' })
-                    });
-                    db = await resPost.json();
-                    sel.innerHTML = '<option value="">Seleziona Alunno</option>';
-                    Object.keys(db.pins).sort().forEach(name => {
-                        sel.innerHTML += `<option value="${name}">${name}</option>`;
-                    });
-                } catch (err) {
-                    sel.innerHTML = '<option>Errore Database</option>';
-                    alert("ERRORE CRITICO: Lo script Google non risponde. Controlla di averlo pubblicato come 'Web App' e con accesso a 'Anyone'.");
-                }
+                selLogin.innerHTML = '<option>Errore Database</option>';
+                console.error(e);
             }
         };
 
@@ -260,9 +328,7 @@
                 document.getElementById('bunker-screen').style.display = 'block';
                 document.getElementById('current-name').innerText = user.toUpperCase();
                 renderCalendar();
-            } else {
-                alert("PIN ERRATO!");
-            }
+            } else { alert("PIN ERRATO!"); }
         }
 
         function renderCalendar() {
@@ -270,6 +336,7 @@
             body.innerHTML = '';
             const y = currentMonthDate.getFullYear();
             const m = currentMonthDate.getMonth();
+            const today = new Date().toISOString().split('T')[0];
             
             document.getElementById('month-display').innerText = 
                 new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' }).format(currentMonthDate);
@@ -284,15 +351,24 @@
                 for (let j = 0; j < 7; j++) {
                     let cell = document.createElement('td');
                     if (i === 0 && j < firstDay) {
-                        cell.style.border = "none";
+                        cell.classList.add('past');
                     } else if (day <= daysInMonth) {
-                        cell.innerHTML = `<span class="day-label">${day}</span>`;
                         const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                        cell.innerHTML = `<span class="day-label">${day}</span>`;
                         
+                        if (dateStr < today) cell.classList.add('past');
+                        if (dateStr === today) cell.classList.add('today');
+
+                        // Rendering Eventi
                         if (db.events) {
                             db.events.filter(e => e.data && e.data.startsWith(dateStr)).forEach(e => {
-                                cell.innerHTML += `<div class="event-bar">${e.materia.toUpperCase()}</div>`;
+                                const typeClass = e.materia_special ? 'tag-altro' : `tag-${e.tipo}`;
+                                cell.innerHTML += `<div class="event-tag ${typeClass}">${e.materia.toUpperCase()}</div>`;
                             });
+                        }
+
+                        if (dateStr >= today) {
+                            cell.onclick = () => openAdd(dateStr);
                         }
                         day++;
                     }
@@ -304,37 +380,100 @@
             document.getElementById('skull-count').innerText = db.events ? db.events.length : 0;
         }
 
+        // --- GESTIONE AGGIUNTA EVENTI ---
+        function openAdd(date) {
+            selectedDateStr = date;
+            document.getElementById('selected-date-label').innerText = "DATA: " + date;
+            document.getElementById('modal-add').style.display = 'block';
+            document.getElementById('modal-add-overlay').style.display = 'block';
+        }
+
+        function toggleTipo() {
+            const tipo = document.getElementById('in-tipo').value;
+            const boxAlunni = document.getElementById('box-interrogati');
+            boxAlunni.style.display = tipo === 'verifica' ? 'none' : 'block';
+            if (tipo === 'verifica') document.getElementById('in-final-alunni').value = "TUTTA LA CLASSE";
+            else document.getElementById('in-final-alunni').value = "";
+        }
+
+        function checkAltro(val) {
+            document.getElementById('in-materia-altro').style.display = val === 'Altro' ? 'block' : 'none';
+        }
+
+        function estraiCasuale() {
+            const n = parseInt(document.getElementById('rand-num').value);
+            if (!n || n < 1) return alert("Inserisci un numero valido");
+            const alunni = Object.keys(db.pins);
+            const estratti = [];
+            while(estratti.length < n && estratti.length < alunni.length) {
+                const r = alunni[Math.floor(Math.random() * alunni.length)];
+                if(!estratti.includes(r)) estratti.push(r);
+            }
+            document.getElementById('in-final-alunni').value = estratti.join(', ');
+        }
+
+        document.getElementById('sel-alunno').onchange = function() {
+            const current = document.getElementById('in-final-alunni').value;
+            const newVal = this.value;
+            if(!newVal) return;
+            document.getElementById('in-final-alunni').value = current ? current + ", " + newVal : newVal;
+        };
+
+        async function salvaEvento() {
+            const btn = document.getElementById('btn-save');
+            btn.innerText = "SINCRO..."; btn.disabled = true;
+
+            let materia = document.getElementById('in-materia').value;
+            let special = false;
+            if (materia === 'Altro') {
+                materia = document.getElementById('in-materia-altro').value || 'Altro';
+                special = true;
+            }
+
+            const payload = {
+                action: 'saveEvent',
+                event: {
+                    id: Date.now(),
+                    data: selectedDateStr,
+                    tipo: document.getElementById('in-tipo').value,
+                    materia: materia,
+                    alunno: document.getElementById('in-final-alunni').value,
+                    desc: document.getElementById('in-desc').value,
+                    materia_special: special
+                }
+            };
+
+            try {
+                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                location.reload();
+            } catch (e) {
+                alert("Errore salvataggio!");
+                btn.innerText = "APPLICA"; btn.disabled = false;
+            }
+        }
+
         function openDestini() {
             const content = document.getElementById('destini-content');
             content.innerHTML = '';
             const today = new Date().toISOString().split('T')[0];
-            
             const future = db.events.filter(e => e.data >= today).sort((a,b) => a.data.localeCompare(b.data));
             
-            if (future.length > 0) {
-                future.forEach(e => {
-                    content.innerHTML += `
-                        <div class="notif-item">
-                            <div style="color:var(--accent-red); font-weight:bold;">${e.materia.toUpperCase()}</div>
-                            <div style="font-size:12px; color:white;">${e.alunno}</div>
-                            <div style="font-size:11px; color:var(--text-gray);">📅 ${e.data}</div>
-                        </div>`;
-                });
-            } else { content.innerHTML = "<p>Nessun pericolo futuro.</p>"; }
-            
-            document.getElementById('destini-modal').style.display = 'block';
-            document.getElementById('modal-overlay').style.display = 'block';
+            future.forEach(e => {
+                content.innerHTML += `
+                    <div class="notif-item">
+                        <div style="color:var(--accent-red); font-weight:bold;">${e.materia.toUpperCase()}</div>
+                        <div style="font-size:11px; margin:4px 0;">👤 ${e.alunno}</div>
+                        <div style="font-size:10px; color:var(--text-gray);">📅 ${e.data} - ${e.tipo}</div>
+                        ${e.desc ? `<div style="font-size:10px; color:#fff; border-top:1px solid #333; margin-top:5px; padding-top:5px;">${e.desc}</div>` : ''}
+                    </div>`;
+            });
+            document.getElementById('modal-notif').style.display = 'block';
+            document.getElementById('modal-notif-overlay').style.display = 'block';
         }
 
-        function closeDestini() {
-            document.getElementById('destini-modal').style.display = 'none';
-            document.getElementById('modal-overlay').style.display = 'none';
-        }
-
-        function moveMonth(v) {
-            currentMonthDate.setMonth(currentMonthDate.getMonth() + v);
-            renderCalendar();
-        }
+        function closeAdd() { document.getElementById('modal-add').style.display = 'none'; document.getElementById('modal-add-overlay').style.display = 'none'; }
+        function closeDestini() { document.getElementById('modal-notif').style.display = 'none'; document.getElementById('modal-notif-overlay').style.display = 'none'; }
+        function moveMonth(v) { currentMonthDate.setMonth(currentMonthDate.getMonth() + v); renderCalendar(); }
     </script>
 </body>
 </html>
