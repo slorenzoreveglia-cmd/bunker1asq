@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1ASQ - BUNKER CLANDESTINO</title>
+    <title>1ASQ - BUNKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0d111a;
-            --panel-bg: #161b2b;
-            --accent-red: #e94560;
-            --accent-blue: #3498db;
-            --border-blue: #242c42;
-            --text-gray: #8b949e;
-            --success-green: #2ecc71;
+            --bg: #0d111a;
+            --panel: #161b2b;
+            --red: #e94560;
+            --blue: #3498db;
+            --border: #242c42;
+            --gray: #8b949e;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg);
             color: white;
             font-family: 'Roboto Mono', monospace;
             margin: 0;
@@ -25,19 +24,10 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* --- LOGIN (Bello) --- */
-        #login-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            width: 100%;
-        }
-
+        /* --- LOGIN BELLO --- */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
         .iasq-logo {
             font-family: 'Creepster', cursive;
             font-size: 100px;
@@ -45,155 +35,67 @@
             text-shadow: 0 0 25px rgba(233, 69, 96, 0.8), 5px 5px 5px #000;
             margin-bottom: 20px;
         }
-
         .login-card {
-            background: var(--panel-bg);
+            background: var(--panel);
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-            width: 320px;
-            border: 1px solid var(--border-blue);
+            width: 340px;
+            border: 1px solid var(--border);
             text-align: center;
         }
-
         select, input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: #0d1117;
-            border: 1px solid var(--border-blue);
-            color: white;
-            border-radius: 8px;
-            font-family: 'Roboto Mono', monospace;
-            box-sizing: border-box;
+            width: 100%; padding: 12px; margin: 10px 0; background: #0d1117;
+            border: 1px solid var(--border); color: white; border-radius: 8px;
+            font-family: 'Roboto Mono', monospace; box-sizing: border-box;
         }
-
         .btn-main {
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
+            background: var(--red); color: white; border: none; padding: 15px;
+            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s;
         }
-        .btn-main:hover { background: #ff2e63; transform: scale(1.02); }
 
-        /* --- INTERFACCIA BUNKER --- */
+        /* --- BUNKER BELLO --- */
         #bunker-screen { display: none; width: 100%; padding: 20px; max-width: 1100px; }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .skull-notif {
-            background: rgba(233, 69, 96, 0.15);
-            border: 1.5px solid var(--accent-red);
-            padding: 8px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
+            background: rgba(233, 69, 96, 0.15); border: 1.5px solid var(--red);
+            padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;
         }
+        .alunno-title { font-family: 'Creepster', cursive; font-size: 32px; color: var(--red); margin: 15px 0; }
 
-        .alunno-title {
-            font-family: 'Creepster', cursive;
-            font-size: 32px;
-            color: var(--accent-red);
-            margin: 15px 0;
-        }
-
-        /* --- CALENDARIO (REPLICATO calendario_bello.png) --- */
+        /* --- CALENDARIO (Pari pari calendario_bello.png) --- */
         .calendar-wrap {
-            background: var(--panel-bg);
-            border-radius: 15px;
-            border: 1px solid var(--border-blue);
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--panel); border-radius: 15px; border: 1px solid var(--border);
+            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        .month-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
+        .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { color: var(--text-gray); padding: 10px; font-size: 13px; text-transform: lowercase; font-weight: normal; }
-        td { height: 110px; border: 0.5px solid var(--border-blue); vertical-align: top; padding: 5px; cursor: pointer; transition: 0.2s; }
-        td:hover:not(.past) { background: rgba(255,255,255,0.03); }
+        th { color: var(--gray); padding: 10px; font-size: 13px; text-transform: lowercase; }
+        td { height: 110px; border: 0.5px solid var(--border); vertical-align: top; padding: 5px; cursor: pointer; }
         td.past { background: rgba(0,0,0,0.2); cursor: default; }
-        td.today { border: 1.5px solid var(--accent-red); background: rgba(233, 69, 96, 0.05); }
-        
-        .day-label { float: right; font-size: 12px; color: var(--text-gray); margin: 3px; }
+        td.today { border: 1.5px solid var(--red); background: rgba(233, 69, 96, 0.05); }
+        .day-label { float: right; font-size: 12px; color: var(--gray); margin: 3px; }
 
+        /* TAG EVENTI */
         .event-tag {
-            font-size: 9px;
-            padding: 3px 6px;
-            border-radius: 4px;
-            margin-top: 20px;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-            margin-bottom: 2px;
+            font-size: 9px; padding: 3px 6px; border-radius: 4px; margin-top: 20px;
+            font-weight: bold; overflow: hidden; text-overflow: ellipsis;
+            display: block; margin-bottom: 2px;
         }
-        .tag-interrogazione { background: var(--accent-red); color: white; }
-        .tag-verifica { background: var(--accent-blue); color: white; }
+        .tag-interrogazione { background: var(--red); color: white; }
+        .tag-verifica { background: var(--blue); color: white; }
         .tag-altro { background: #f1c40f; color: black; }
 
-        /* --- MODALI (Replicati notifica_bella.png) --- */
+        /* --- MODALE --- */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(5px);
-            z-index: 999;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 999;
         }
-
         .modal-box {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--panel-bg);
-            border: 2px solid var(--accent-red);
-            width: 90%; max-width: 450px;
-            padding: 25px;
-            border-radius: 20px;
-            z-index: 1000;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-title { font-family: 'Creepster', cursive; color: var(--accent-red); margin-top: 0; font-size: 28px; }
-        
-        .section-label { font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-top: 15px; display: block; }
-        
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        .random-box { 
-            background: rgba(0,0,0,0.2); 
-            padding: 10px; 
-            border-radius: 8px; 
-            border: 1px dashed var(--border-blue);
-            margin-top: 10px;
-        }
-
-        .notif-item {
-            background: #1e253a;
-            border-left: 4px solid var(--accent-red);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--panel); border: 2px solid var(--red); width: 90%; max-width: 450px;
+            padding: 25px; border-radius: 20px; z-index: 1000;
         }
     </style>
 </head>
@@ -202,7 +104,7 @@
     <div id="login-screen">
         <div class="iasq-logo">IASQ</div>
         <div class="login-card">
-            <select id="user-select"><option>Inizializzazione Bunker...</option></select>
+            <select id="user-select"><option>📡 CONNESSIONE IN CORSO...</option></select>
             <input type="password" id="pin-input" placeholder="PIN SEGRETO">
             <button class="btn-main" onclick="tryLogin()">ACCEDI AL SISTEMA</button>
         </div>
@@ -212,11 +114,9 @@
         <div class="header-top">
             <button onclick="location.reload()" style="background:none; border:none; color:white; cursor:pointer;">← EXIT</button>
             <div class="skull-notif" onclick="openDestini()">💀 <span id="skull-count">0</span> +</div>
-            <button style="background:#242c42; border:none; color:white; padding:5px 12px; border-radius:5px; font-size:12px;">👤 PIN</button>
+            <button style="background:#242c42; border:none; color:white; padding:5px 12px; border-radius:5px;">👤 PIN</button>
         </div>
-
         <div class="alunno-title">SOLDATO: <span id="current-name"></span></div>
-
         <div class="calendar-wrap">
             <div class="month-header">
                 <div id="month-display" style="font-size: 24px; font-weight: bold; text-transform: lowercase;"></div>
@@ -232,248 +132,194 @@
         </div>
     </div>
 
-    <div id="modal-add-overlay" class="modal-overlay" onclick="closeAdd()"></div>
+    <div id="modal-overlay" class="modal-overlay" onclick="closeAll()"></div>
     <div id="modal-add" class="modal-box">
-        <h2 class="modal-title">NUOVO DESTINO</h2>
-        <p id="selected-date-label" style="font-size:12px; color:var(--text-gray); margin-bottom:20px;"></p>
+        <h2 style="font-family:'Creepster'; color:var(--red); margin:0;">NUOVO DESTINO</h2>
+        <p id="sel-date-txt" style="font-size:11px; color:var(--gray);"></p>
         
-        <span class="section-label">Tipo Evento</span>
         <select id="in-tipo" onchange="toggleTipo()">
             <option value="interrogazione">Interrogazione 📝</option>
             <option value="verifica">Verifica 📚</option>
         </select>
-
-        <span class="section-label">Materia</span>
-        <select id="in-materia" onchange="checkAltro(this.value)">
-            <option value="Matematica">Matematica</option>
-            <option value="Fisica">Fisica</option>
-            <option value="Inglese">Inglese</option>
-            <option value="Diritto">Diritto</option>
-            <option value="TTRG">TTRG</option>
-            <option value="Scienze motorie">Scienze motorie</option>
-            <option value="Scienze">Scienze</option>
-            <option value="Storia">Storia</option>
-            <option value="Geografia">Geografia</option>
-            <option value="Religione">Religione</option>
-            <option value="Informatica">Informatica</option>
-            <option value="Altro">-- ALTRO --</option>
+        
+        <select id="in-materia" onchange="document.getElementById('in-altro').style.display=(this.value=='Altro'?'block':'none')">
+            <option value="Matematica">Matematica</option><option value="Fisica">Fisica</option>
+            <option value="Inglese">Inglese</option><option value="Diritto">Diritto</option>
+            <option value="TTRG">TTRG</option><option value="Scienze">Scienze</option>
+            <option value="Storia">Storia</option><option value="Altro">-- ALTRO --</option>
         </select>
-        <input type="text" id="in-materia-altro" placeholder="Titolo della materia..." style="display:none;">
+        <input type="text" id="in-altro" placeholder="Titolo materia..." style="display:none;">
 
-        <div id="box-interrogati">
-            <span class="section-label">Chi sarà interrogato?</span>
-            <div class="grid-2">
-                <select id="sel-alunno">
-                    <option value="">Seleziona Alunno</option>
-                </select>
-                <div class="random-box">
-                    <input type="number" id="rand-num" placeholder="Q.tà" style="margin:0; padding:8px;" min="1" max="10">
-                    <button onclick="estraiCasuale()" style="width:100%; margin-top:5px; font-size:10px; padding:5px; background:var(--accent-blue); border:none; color:white; border-radius:4px; cursor:pointer;">ESTRAI</button>
-                </div>
+        <div id="box-alunni">
+            <div style="display:flex; gap:5px;">
+                <select id="sel-alunno-list" style="flex:2;"><option value="">Scegli...</option></select>
+                <input type="number" id="rand-n" placeholder="Q.tà" style="flex:1;">
+                <button onclick="estrai()" style="background:var(--blue); border:none; color:white; border-radius:8px; padding:0 10px; cursor:pointer;">🎲</button>
             </div>
-            <textarea id="in-final-alunni" placeholder="Alunni selezionati..." rows="2"></textarea>
         </div>
-
-        <span class="section-label">Descrizione (Facoltativa)</span>
-        <textarea id="in-desc" placeholder="Dettagli sulla verifica/interrogazione..." rows="2"></textarea>
-
-        <div class="grid-2" style="margin-top:20px;">
-            <button class="btn-main" id="btn-save" onclick="salvaEvento()">APPLICA</button>
-            <button class="btn-main" style="background:#242c42;" onclick="closeAdd()">ANNULLA</button>
+        <textarea id="in-final" placeholder="Alunni selezionati..." rows="2"></textarea>
+        <textarea id="in-desc" placeholder="Descrizione (opzionale)" rows="2"></textarea>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="btn-main" id="btn-save" onclick="salva()">APPLICA</button>
+            <button class="btn-main" style="background:#242c42;" onclick="closeAll()">ANNULLA</button>
         </div>
     </div>
 
-    <div id="modal-notif-overlay" class="modal-overlay" onclick="closeDestini()"></div>
-    <div id="modal-notif" class="modal-box">
-        <h2 class="modal-title">I TUOI DESTINI</h2>
+    <div id="modal-list" class="modal-box">
+        <h2 style="font-family:'Creepster'; color:var(--red);">DESTINI</h2>
         <div id="destini-content"></div>
-        <button class="btn-main" style="background:#242c42; margin-top:20px;" onclick="closeDestini()">CHIUDI</button>
+        <button class="btn-main" style="background:#242c42; margin-top:15px;" onclick="closeAll()">CHIUDI</button>
     </div>
 
     <script>
-        // *** CONFIGURAZIONE ***
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxBD-5Cc2nVUPTTdM2if2jRvNfezWklU1uCFOENzPWDyVMKL1_BfRUMqzqfwokgQ8gyQ/exec";
-        
         let db = { events: [], pins: {} };
-        let currentMonthDate = new Date();
-        let selectedDateStr = "";
+        let curM = new Date();
+        let selD = "";
 
-        window.onload = async () => {
-            const selLogin = document.getElementById('user-select');
-            const selAdd = document.getElementById('sel-alunno');
+        // FUNZIONE SINCRO BLINDATA
+        async function loadData() {
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getInitialData`);
-                db = await response.json();
-                
-                const alunni = Object.keys(db.pins).sort();
-                selLogin.innerHTML = '<option value="">Seleziona Alunno</option>';
-                selAdd.innerHTML = '<option value="">Seleziona Alunno</option>';
-                
-                alunni.forEach(name => {
-                    const opt = `<option value="${name}">${name}</option>`;
-                    selLogin.innerHTML += opt;
-                    selAdd.innerHTML += opt;
-                });
+                // Tentativo 1: GET semplice
+                const r = await fetch(`${SCRIPT_URL}?action=getInitialData`);
+                db = await r.json();
+                fillSelects();
             } catch (e) {
-                selLogin.innerHTML = '<option>Errore Database</option>';
-                console.error(e);
+                console.log("GET fallito, provo POST...");
+                try {
+                    // Tentativo 2: POST
+                    const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action:'getInitialData'}) });
+                    db = await r.json();
+                    fillSelects();
+                } catch (e2) {
+                    document.getElementById('user-select').innerHTML = "<option>ERRORE DI CONNESSIONE</option>";
+                    alert("ERRORE DATABASE: Controlla che lo script sia pubblicato come 'Anyone'!");
+                }
             }
-        };
-
-        function tryLogin() {
-            const user = document.getElementById('user-select').value;
-            const pin = document.getElementById('pin-input').value;
-            if (db.pins && db.pins[user] === pin) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('bunker-screen').style.display = 'block';
-                document.getElementById('current-name').innerText = user.toUpperCase();
-                renderCalendar();
-            } else { alert("PIN ERRATO!"); }
         }
 
-        function renderCalendar() {
+        function fillSelects() {
+            const s1 = document.getElementById('user-select');
+            const s2 = document.getElementById('sel-alunno-list');
+            const names = Object.keys(db.pins).sort();
+            s1.innerHTML = '<option value="">Chi sei?</option>';
+            s2.innerHTML = '<option value="">Aggiungi Alunno...</option>';
+            names.forEach(n => {
+                s1.innerHTML += `<option value="${n}">${n}</option>`;
+                s2.innerHTML += `<option value="${n}">${n}</option>`;
+            });
+        }
+
+        window.onload = loadData;
+
+        function tryLogin() {
+            const u = document.getElementById('user-select').value;
+            const p = document.getElementById('pin-input').value;
+            if (db.pins[u] === p) {
+                document.getElementById('login-screen').style.display='none';
+                document.getElementById('bunker-screen').style.display='block';
+                document.getElementById('current-name').innerText = u.toUpperCase();
+                render();
+            } else alert("PIN ERRATO!");
+        }
+
+        function render() {
             const body = document.getElementById('calendar-body');
             body.innerHTML = '';
-            const y = currentMonthDate.getFullYear();
-            const m = currentMonthDate.getMonth();
+            const y = curM.getFullYear(), m = curM.getMonth();
             const today = new Date().toISOString().split('T')[0];
+            document.getElementById('month-display').innerText = new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(curM);
             
-            document.getElementById('month-display').innerText = 
-                new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' }).format(currentMonthDate);
+            let first = new Date(y, m, 1).getDay();
+            first = first === 0 ? 6 : first - 1;
+            const days = new Date(y, m + 1, 0).getDate();
 
-            let firstDay = new Date(y, m, 1).getDay();
-            firstDay = firstDay === 0 ? 6 : firstDay - 1; 
-            const daysInMonth = new Date(y, m + 1, 0).getDate();
-
-            let day = 1;
+            let d = 1;
             for (let i = 0; i < 6; i++) {
                 let row = document.createElement('tr');
                 for (let j = 0; j < 7; j++) {
                     let cell = document.createElement('td');
-                    if (i === 0 && j < firstDay) {
-                        cell.classList.add('past');
-                    } else if (day <= daysInMonth) {
-                        const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                        cell.innerHTML = `<span class="day-label">${day}</span>`;
+                    if (i === 0 && j < first) { cell.classList.add('past'); }
+                    else if (d <= days) {
+                        const dStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        cell.innerHTML = `<span class="day-label">${d}</span>`;
+                        if (dStr < today) cell.classList.add('past');
+                        if (dStr === today) cell.classList.add('today');
                         
-                        if (dateStr < today) cell.classList.add('past');
-                        if (dateStr === today) cell.classList.add('today');
+                        db.events.filter(e => e.data.startsWith(dStr)).forEach(e => {
+                            const c = e.materia_special ? 'tag-altro' : `tag-${e.tipo}`;
+                            cell.innerHTML += `<div class="event-tag ${c}">${e.materia.toUpperCase()}</div>`;
+                        });
 
-                        // Rendering Eventi
-                        if (db.events) {
-                            db.events.filter(e => e.data && e.data.startsWith(dateStr)).forEach(e => {
-                                const typeClass = e.materia_special ? 'tag-altro' : `tag-${e.tipo}`;
-                                cell.innerHTML += `<div class="event-tag ${typeClass}">${e.materia.toUpperCase()}</div>`;
-                            });
-                        }
-
-                        if (dateStr >= today) {
-                            cell.onclick = () => openAdd(dateStr);
-                        }
-                        day++;
+                        if (dStr >= today) cell.onclick = () => { selD = dStr; openAdd(); };
+                        d++;
                     }
                     row.appendChild(cell);
                 }
                 body.appendChild(row);
-                if (day > daysInMonth) break;
+                if (d > days) break;
             }
-            document.getElementById('skull-count').innerText = db.events ? db.events.length : 0;
+            document.getElementById('skull-count').innerText = db.events.length;
         }
 
-        // --- GESTIONE AGGIUNTA EVENTI ---
-        function openAdd(date) {
-            selectedDateStr = date;
-            document.getElementById('selected-date-label').innerText = "DATA: " + date;
-            document.getElementById('modal-add').style.display = 'block';
-            document.getElementById('modal-add-overlay').style.display = 'block';
+        function openAdd() {
+            document.getElementById('sel-date-txt').innerText = "DATA: " + selD;
+            document.getElementById('modal-add').style.display='block';
+            document.getElementById('modal-overlay').style.display='block';
         }
 
         function toggleTipo() {
-            const tipo = document.getElementById('in-tipo').value;
-            const boxAlunni = document.getElementById('box-interrogati');
-            boxAlunni.style.display = tipo === 'verifica' ? 'none' : 'block';
-            if (tipo === 'verifica') document.getElementById('in-final-alunni').value = "TUTTA LA CLASSE";
-            else document.getElementById('in-final-alunni').value = "";
+            const isV = document.getElementById('in-tipo').value === 'verifica';
+            document.getElementById('box-alunni').style.display = isV ? 'none' : 'block';
+            document.getElementById('in-final').value = isV ? "TUTTA LA CLASSE" : "";
         }
 
-        function checkAltro(val) {
-            document.getElementById('in-materia-altro').style.display = val === 'Altro' ? 'block' : 'none';
-        }
-
-        function estraiCasuale() {
-            const n = parseInt(document.getElementById('rand-num').value);
-            if (!n || n < 1) return alert("Inserisci un numero valido");
-            const alunni = Object.keys(db.pins);
-            const estratti = [];
-            while(estratti.length < n && estratti.length < alunni.length) {
-                const r = alunni[Math.floor(Math.random() * alunni.length)];
-                if(!estratti.includes(r)) estratti.push(r);
-            }
-            document.getElementById('in-final-alunni').value = estratti.join(', ');
-        }
-
-        document.getElementById('sel-alunno').onchange = function() {
-            const current = document.getElementById('in-final-alunni').value;
-            const newVal = this.value;
-            if(!newVal) return;
-            document.getElementById('in-final-alunni').value = current ? current + ", " + newVal : newVal;
+        document.getElementById('sel-alunno-list').onchange = function() {
+            const f = document.getElementById('in-final');
+            f.value = f.value ? f.value + ", " + this.value : this.value;
         };
 
-        async function salvaEvento() {
-            const btn = document.getElementById('btn-save');
-            btn.innerText = "SINCRO..."; btn.disabled = true;
-
-            let materia = document.getElementById('in-materia').value;
-            let special = false;
-            if (materia === 'Altro') {
-                materia = document.getElementById('in-materia-altro').value || 'Altro';
-                special = true;
+        function estrai() {
+            const n = parseInt(document.getElementById('rand-n').value);
+            const names = Object.keys(db.pins);
+            const res = [];
+            while(res.length < n) {
+                const r = names[Math.floor(Math.random()*names.length)];
+                if(!res.includes(r)) res.push(r);
             }
+            document.getElementById('in-final').value = res.join(', ');
+        }
+
+        async function salva() {
+            const btn = document.getElementById('btn-save');
+            btn.innerText = "SALVATAGGIO..."; btn.disabled = true;
+            let mat = document.getElementById('in-materia').value;
+            let sp = false;
+            if(mat === 'Altro') { mat = document.getElementById('in-altro').value; sp = true; }
 
             const payload = {
                 action: 'saveEvent',
-                event: {
-                    id: Date.now(),
-                    data: selectedDateStr,
-                    tipo: document.getElementById('in-tipo').value,
-                    materia: materia,
-                    alunno: document.getElementById('in-final-alunni').value,
-                    desc: document.getElementById('in-desc').value,
-                    materia_special: special
-                }
+                event: { id: Date.now(), data: selD, tipo: document.getElementById('in-tipo').value, materia: mat, alunno: document.getElementById('in-final').value, desc: document.getElementById('in-desc').value, materia_special: sp }
             };
 
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-                location.reload();
-            } catch (e) {
-                alert("Errore salvataggio!");
-                btn.innerText = "APPLICA"; btn.disabled = false;
-            }
+            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            location.reload();
         }
 
         function openDestini() {
-            const content = document.getElementById('destini-content');
-            content.innerHTML = '';
-            const today = new Date().toISOString().split('T')[0];
-            const future = db.events.filter(e => e.data >= today).sort((a,b) => a.data.localeCompare(b.data));
-            
-            future.forEach(e => {
-                content.innerHTML += `
-                    <div class="notif-item">
-                        <div style="color:var(--accent-red); font-weight:bold;">${e.materia.toUpperCase()}</div>
-                        <div style="font-size:11px; margin:4px 0;">👤 ${e.alunno}</div>
-                        <div style="font-size:10px; color:var(--text-gray);">📅 ${e.data} - ${e.tipo}</div>
-                        ${e.desc ? `<div style="font-size:10px; color:#fff; border-top:1px solid #333; margin-top:5px; padding-top:5px;">${e.desc}</div>` : ''}
-                    </div>`;
+            const c = document.getElementById('destini-content'); c.innerHTML = '';
+            db.events.sort((a,b)=>a.data.localeCompare(b.data)).forEach(e => {
+                c.innerHTML += `<div style="background:#1e253a; border-left:4px solid var(--red); padding:10px; margin-bottom:10px; border-radius:8px;">
+                    <b style="color:var(--red)">${e.materia.toUpperCase()}</b><br><small>📅 ${e.data} - ${e.alunno}</small>
+                </div>`;
             });
-            document.getElementById('modal-notif').style.display = 'block';
-            document.getElementById('modal-notif-overlay').style.display = 'block';
+            document.getElementById('modal-list').style.display='block';
+            document.getElementById('modal-overlay').style.display='block';
         }
 
-        function closeAdd() { document.getElementById('modal-add').style.display = 'none'; document.getElementById('modal-add-overlay').style.display = 'none'; }
-        function closeDestini() { document.getElementById('modal-notif').style.display = 'none'; document.getElementById('modal-notif-overlay').style.display = 'none'; }
-        function moveMonth(v) { currentMonthDate.setMonth(currentMonthDate.getMonth() + v); renderCalendar(); }
+        function closeAll() { document.querySelectorAll('.modal-box, .modal-overlay').forEach(e=>e.style.display='none'); }
+        function moveMonth(v) { curM.setMonth(curM.getMonth()+v); render(); }
     </script>
 </body>
 </html>
