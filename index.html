@@ -3,291 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1ASQ - Bunker Clandestino</title>
+    <title>1ASQ - BUNKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0d1117;
-            --panel-bg: #161b22;
-            --accent-red: #e94560;
-            --notif-blue: #3498db;
-            --notif-purple: #9b59b6;
-            --text-gray: #c9d1d9;
+            --bg: #0d1117;
+            --card: #161b22;
+            --accent: #e94560;
+            --text: #c9d1d9;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg);
             color: white;
             font-family: 'Roboto', sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
         }
 
         /* --- LOGIN --- */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
-        .iasq-logo { font-family: 'Creepster', cursive; font-size: 80px; text-shadow: 0 0 20px rgba(233, 69, 96, 0.8); margin-bottom: 20px; }
-        .login-card { background: #1a1e2e; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 320px; border: 1px solid #2a2e3e; }
-        
-        select, input { width: 100%; padding: 12px; margin: 10px 0; background: #0f111a; border: 1px solid #2a2e3e; color: white; border-radius: 5px; box-sizing: border-box; }
-        .btn-main { background: var(--accent-red); color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .logo { font-family: 'Creepster', cursive; font-size: 70px; color: white; text-shadow: 0 0 15px var(--accent); margin-bottom: 20px; }
+        .login-card { background: var(--card); padding: 30px; border-radius: 12px; width: 300px; border: 1px solid #30363d; }
 
-        /* --- MAIN INTERFACE --- */
-        #bunker-screen { width: 100%; max-width: 1000px; padding: 20px; box-sizing: border-box; display: none; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        .skull-notif { 
-            cursor: pointer; background: rgba(233, 69, 96, 0.1); border: 1px solid var(--accent-red); 
-            padding: 8px 15px; border-radius: 20px; font-weight: bold; transition: 0.3s;
-        }
-        .skull-notif:hover { background: rgba(233, 69, 96, 0.3); }
-
-        .alunno-tag { font-family: 'Creepster', cursive; color: var(--accent-red); font-size: 28px; margin: 15px 0; }
+        /* --- HEADER --- */
+        #bunker-screen { width: 100%; max-width: 900px; padding: 20px; display: none; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .skull { cursor: pointer; border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px; background: rgba(233, 69, 96, 0.1); }
 
         /* --- CALENDARIO --- */
-        .calendar-container { background: #1a1e2e; padding: 20px; border-radius: 10px; border: 1px solid #2a2e3e; }
+        .cal-box { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #30363d; }
         .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { color: var(--text-gray); padding: 10px; text-transform: uppercase; font-size: 0.8rem; }
-        td { height: 110px; border: 1px solid #2a2e3e; vertical-align: top; padding: 5px; position: relative; cursor: pointer; }
-        td:hover:not(.empty) { background: #21262d; }
+        table { width: 100%; border-collapse: collapse; }
+        th { color: var(--text); padding: 10px; font-size: 0.8rem; text-transform: uppercase; }
+        td { height: 90px; width: 14%; border: 1px solid #30363d; vertical-align: top; padding: 5px; cursor: pointer; position: relative; }
+        td:hover { background: #21262d; }
         td.past { background: #0d1117; color: #484f58; cursor: default; }
-        td.today { border: 2px solid var(--accent-red); background: rgba(233, 69, 96, 0.05); }
-
-        .day-num { float: right; font-weight: bold; }
         
-        /* EVENTI NEL CALENDARIO */
-        .event-tag { 
-            font-size: 10px; padding: 3px 5px; border-radius: 3px; margin-top: 22px; 
-            font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .tag-int { background: var(--accent-red); color: white; }
-        .tag-ver { background: var(--notif-blue); color: white; }
-        .tag-altro { background: #d4af37; color: black; }
+        .day-n { float: right; font-size: 12px; color: var(--text); }
+        .ev-tag { background: var(--accent); font-size: 10px; padding: 2px 4px; border-radius: 3px; margin-top: 18px; font-weight: bold; overflow: hidden; }
+        .ev-ver { background: #3498db; }
 
         /* --- MODALI --- */
         .modal { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background: #1a1e2e; border: 2px solid var(--accent-red); padding: 25px; 
-            border-radius: 15px; z-index: 1000; width: 90%; max-width: 400px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            background: var(--card); border: 2px solid var(--accent); padding: 20px; 
+            border-radius: 10px; z-index: 100; width: 85%; max-width: 350px; 
         }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 900; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 50; }
+        
+        input, select, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white; }
+        .btn-red { background: var(--accent); border: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="iasq-logo">IASQ</div>
+        <div class="logo">1ASQ</div>
         <div class="login-card">
-            <select id="user-select"><option>Caricamento...</option></select>
-            <input type="password" id="pin-input" placeholder="PIN SEGRETO">
-            <button class="btn-main" onclick="handleLogin()">ENTRA NEL BUNKER</button>
+            <select id="user-list"><option>Caricamento...</option></select>
+            <input type="password" id="user-pin" placeholder="PIN">
+            <button class="btn-red" onclick="doLogin()">ENTRA</button>
         </div>
     </div>
 
     <div id="bunker-screen">
-        <div class="header-bar">
-            <button onclick="location.reload()" style="background:#21262d; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">ESCI</button>
-            <div class="skull-notif" onclick="openDestini()">
-                💀 <span id="notif-count">0</span> +
-            </div>
-            <button onclick="openPinModal()" style="background:#21262d; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">CAMBIA PIN</button>
+        <div class="top-bar">
+            <button onclick="location.reload()" style="width:auto; padding:5px 10px;">ESCI</button>
+            <div class="skull" onclick="showNotif()">💀 <span id="n-val">0</span> +</div>
+            <div style="font-family:'Creepster'; color:var(--accent); font-size:20px;">SOLDATO: <span id="u-name"></span></div>
         </div>
 
-        <div class="alunno-tag">SOLDATO: <span id="current-user-name">---</span></div>
-
-        <div class="calendar-container">
+        <div class="cal-box">
             <div class="cal-nav">
-                <button onclick="changeMonth(-1)" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">&lt;</button>
-                <h2 id="month-display" style="text-transform: capitalize;">febbraio 2026</h2>
-                <button onclick="changeMonth(1)" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">&gt;</button>
+                <button onclick="moveMonth(-1)" style="width:auto;">&lt;</button>
+                <h3 id="m-name" style="text-transform: capitalize;"></h3>
+                <button onclick="moveMonth(1)" style="width:auto;">&gt;</button>
             </div>
             <table>
                 <thead><tr><th>lun</th><th>mar</th><th>mer</th><th>gio</th><th>ven</th><th>sab</th><th>dom</th></tr></thead>
-                <tbody id="calendar-body"></tbody>
+                <tbody id="cal-body"></tbody>
             </table>
         </div>
     </div>
 
-    <div id="modal-destini" class="modal">
-        <h2 style="font-family:'Creepster'; color:var(--accent-red); margin-top:0;">I TUOI DESTINI</h2>
-        <div id="destini-list" style="max-height: 300px; overflow-y: auto;"></div>
-        <button class="btn-main" onclick="closeModals()" style="background:#21262d; margin-top:15px;">CHIUDI</button>
+    <div id="modal-add" class="modal">
+        <h3 id="add-date" style="margin:0; color:var(--accent);"></h3>
+        <select id="in-tipo"><option value="interrogazione">Interrogazione 📝</option><option value="verifica">Verifica 📚</option></select>
+        <select id="in-mat">
+            <option value="Italiano">Italiano</option><option value="Matematica">Matematica</option>
+            <option value="Inglese">Inglese</option><option value="TTRG">TTRG</option>
+            <option value="Diritto">Diritto</option><option value="Altro">-- ALTRO --</option>
+        </select>
+        <input type="text" id="in-altro" placeholder="Nome materia..." style="display:none;">
+        <select id="in-alunno"></select>
+        <input type="text" id="in-desc" placeholder="Descrizione">
+        <button class="btn-red" id="btn-save" onclick="save()">SALVA</button>
+        <button onclick="closeAll()">ANNULLA</button>
     </div>
 
-    <div id="modal-insert" class="modal">
-        <h2 id="insert-date-title" style="margin-top:0; font-size:1.2rem;"></h2>
-        <select id="ins-tipo" onchange="toggleInsMode()">
-            <option value="interrogazione">Interrogazione 📝</option>
-            <option value="verifica">Verifica 📚</option>
-        </select>
-        <select id="ins-materia" onchange="checkOther(this.value)">
-            <option value="Italiano">Italiano</option>
-            <option value="Matematica">Matematica</option>
-            <option value="Inglese">Inglese</option>
-            <option value="TTRG">TTRG</option>
-            <option value="Altro">-- ALTRO --</option>
-        </select>
-        <input type="text" id="ins-altro" placeholder="Nome materia..." style="display:none;">
-        <div id="ins-student-box">
-            <select id="ins-alunno"></select>
-        </div>
-        <input type="text" id="ins-desc" placeholder="Descrizione (facoltativa)">
-        <button class="btn-main" onclick="saveToDb()">SALVA NEL DATABASE</button>
-        <button class="btn-main" onclick="closeModals()" style="background:#21262d; margin-top:10px;">ANNULLA</button>
-    </div>
-
-    <div id="overlay" class="overlay" onclick="closeModals()"></div>
+    <div id="overlay" class="overlay" onclick="closeAll()"></div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxBD-5Cc2nVUPTTdM2if2jRvNfezWklU1uCFOENzPWDyVMKL1_BfRUMqzqfwokgQ8gyQ/exec";
+        const SCRIPT_URL = "INSERISCI_QUI_IL_TUO_URL_EXEC";
         let db = { events: [], pins: {} };
-        let viewDate = new Date();
-        let selectedDate = null;
+        let vDate = new Date();
+        let selD = "";
 
         window.onload = async () => {
-            const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action:'getInitialData'}) });
-            db = await res.json();
-            
-            const sel = document.getElementById('user-select');
-            sel.innerHTML = '<option value="">Chi sei?</option>';
-            Object.keys(db.pins).sort().forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
+            const r = await fetch(SCRIPT_URL, {method:'POST', body:JSON.stringify({action:'getInitialData'})});
+            db = await r.json();
+            const s = document.getElementById('user-list');
+            s.innerHTML = "";
+            Object.keys(db.pins).sort().forEach(n => s.innerHTML += `<option value="${n}">${n}</option>`);
         };
 
-        function handleLogin() {
-            const user = document.getElementById('user-select').value;
-            const pin = document.getElementById('pin-input').value;
-            if (db.pins[user] === pin) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('bunker-screen').style.display = 'block';
-                document.getElementById('current-user-name').innerText = user.toUpperCase();
-                renderCalendar();
-            } else { alert("ACCESSO NEGATO. PIN ERRATO."); }
+        function doLogin() {
+            const u = document.getElementById('user-list').value;
+            const p = document.getElementById('user-pin').value;
+            if (db.pins[u] === p) {
+                document.getElementById('login-screen').style.display='none';
+                document.getElementById('bunker-screen').style.display='block';
+                document.getElementById('u-name').innerText = u.toUpperCase();
+                render();
+            } else { alert("PIN ERRATO!"); }
         }
 
-        function renderCalendar() {
-            const body = document.getElementById('calendar-body');
-            body.innerHTML = '';
-            const year = viewDate.getFullYear();
-            const month = viewDate.getMonth();
-            const today = new Date();
-            today.setHours(0,0,0,0);
+        function render() {
+            const b = document.getElementById('cal-body'); b.innerHTML = "";
+            const y = vDate.getFullYear(), m = vDate.getMonth();
+            document.getElementById('m-name').innerText = new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(vDate);
+            
+            let first = new Date(y, m, 1).getDay();
+            first = first === 0 ? 6 : first - 1;
+            const days = new Date(y, m + 1, 0).getDate();
 
-            document.getElementById('month-display').innerText = new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' }).format(viewDate);
-
-            let firstDay = new Date(year, month, 1).getDay();
-            firstDay = (firstDay === 0) ? 6 : firstDay - 1;
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            let date = 1;
+            let d = 1;
             for (let i = 0; i < 6; i++) {
-                let row = document.createElement('tr');
+                let r = document.createElement('tr');
                 for (let j = 0; j < 7; j++) {
-                    let cell = document.createElement('td');
-                    if (i === 0 && j < firstDay) {
-                        cell.classList.add('empty');
-                    } else if (date <= daysInMonth) {
-                        const cellDate = new Date(year, month, date);
-                        const dStr = cellDate.toISOString().split('T')[0];
+                    let c = document.createElement('td');
+                    if (i === 0 && j < first) { c.style.border="none"; }
+                    else if (d <= days) {
+                        const cur = new Date(y,m,d);
+                        const dStr = cur.toLocaleDateString('en-CA'); // YYYY-MM-DD sicuro
+                        c.innerHTML = `<span class="day-n">${d}</span>`;
+                        if (cur < new Date().setHours(0,0,0,0)) c.className = "past";
                         
-                        if (cellDate < today) cell.classList.add('past');
-                        if (cellDate.getTime() === today.getTime()) cell.classList.add('today');
-
-                        cell.innerHTML = `<span class="day-num">${date}</span>`;
-                        
-                        // Rendering Eventi
                         db.events.filter(e => e.data === dStr).forEach(e => {
-                            const typeClass = e.tipo === 'verifica' ? 'tag-ver' : (e.materia_special ? 'tag-altro' : 'tag-int');
-                            cell.innerHTML += `<div class="event-tag ${typeClass}">${e.materia.toUpperCase()}</div>`;
+                            c.innerHTML += `<div class="ev-tag ${e.tipo==='verifica'?'ev-ver':''}">${e.materia.toUpperCase()}</div>`;
                         });
 
-                        if (cellDate >= today) {
-                            cell.onclick = () => openInsert(dStr);
-                        }
-                        date++;
+                        if (cur >= new Date().setHours(0,0,0,0)) c.onclick = () => openAdd(dStr);
+                        d++;
                     }
-                    row.appendChild(cell);
+                    r.appendChild(c);
                 }
-                body.appendChild(row);
-                if (date > daysInMonth) break;
+                b.appendChild(r);
+                if (d > days) break;
             }
-            updateSkull();
+            document.getElementById('n-val').innerText = db.events.length;
         }
 
-        function openInsert(date) {
-            selectedDate = date;
-            document.getElementById('insert-date-title').innerText = "DATA SELEZIONATA: " + date;
-            const sel = document.getElementById('ins-alunno');
-            sel.innerHTML = '';
-            Object.keys(db.pins).sort().forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
-            document.getElementById('modal-insert').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
+        function openAdd(date) {
+            selD = date;
+            document.getElementById('add-date').innerText = date;
+            const s = document.getElementById('in-alunno');
+            s.innerHTML = '<option value="TUTTA LA CLASSE">TUTTA LA CLASSE</option>';
+            Object.keys(db.pins).sort().forEach(n => s.innerHTML += `<option value="${n}">${n}</option>`);
+            document.getElementById('modal-add').style.display='block';
+            document.getElementById('overlay').style.display='block';
         }
 
-        async function saveToDb() {
-            const btn = document.querySelector('#modal-insert .btn-main');
-            btn.innerText = "SINCRO IN CORSO...";
-            btn.disabled = true;
+        async function save() {
+            const btn = document.getElementById('btn-save');
+            btn.innerText = "INVIO..."; btn.disabled = true;
+            
+            let mat = document.getElementById('in-mat').value;
+            if (mat === 'Altro') mat = document.getElementById('in-altro').value;
 
-            let mat = document.getElementById('ins-materia').value;
-            let special = false;
-            if (mat === 'Altro') { mat = document.getElementById('ins-altro').value; special = true; }
-
-            const payload = {
+            const data = {
                 action: 'saveEvent',
                 event: {
                     id: Date.now(),
-                    data: selectedDate,
+                    data: selD,
                     materia: mat,
-                    tipo: document.getElementById('ins-tipo').value,
-                    alunno: document.getElementById('ins-tipo').value === 'verifica' ? "TUTTA LA CLASSE" : document.getElementById('ins-alunno').value,
-                    desc: document.getElementById('ins-desc').value,
-                    materia_special: special
+                    tipo: document.getElementById('in-tipo').value,
+                    alunno: document.getElementById('in-alunno').value,
+                    desc: document.getElementById('in-desc').value
                 }
             };
 
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            await fetch(SCRIPT_URL, {method:'POST', body:JSON.stringify(data)});
             location.reload();
         }
 
-        function openDestini() {
-            const list = document.getElementById('destini-list');
-            list.innerHTML = '';
-            const today = new Date().toISOString().split('T')[0];
-            
-            db.events.filter(e => e.data >= today).sort((a,b) => a.data.localeCompare(b.data)).forEach(e => {
-                const diff = Math.floor((new Date(e.data) - new Date(today)) / (86400000));
-                let color = 'white';
-                if (diff <= 2) color = 'var(--accent-red)';
-                else if (diff <= 5) color = 'var(--notif-blue)';
-                else if (diff <= 7) color = 'var(--notif-purple)';
-
-                list.innerHTML += `
-                    <div style="padding:10px; border-bottom:1px solid #2a2e3e; color:${color}">
-                        <b>${e.data}</b> - ${e.materia.toUpperCase()}<br>
-                        <small>${e.alunno} (${e.desc || 'No desc'})</small>
-                    </div>`;
-            });
-            document.getElementById('modal-destini').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
-        }
-
-        function updateSkull() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('notif-count').innerText = db.events.filter(e => e.data >= today).length;
-        }
-
-        function toggleInsMode() {
-            document.getElementById('ins-student-box').style.display = 
-                document.getElementById('ins-tipo').value === 'verifica' ? 'none' : 'block';
-        }
-
-        function checkOther(v) { document.getElementById('ins-altro').style.display = v === 'Altro' ? 'block' : 'none'; }
-        function changeMonth(v) { viewDate.setMonth(viewDate.getMonth() + v); renderCalendar(); }
-        function closeModals() { document.querySelectorAll('.modal, .overlay').forEach(m => m.style.display = 'none'); }
+        function moveMonth(v) { vDate.setMonth(vDate.getMonth()+v); render(); }
+        function closeAll() { document.querySelectorAll('.modal, .overlay').forEach(e => e.style.display='none'); }
+        function showNotif() { alert("Controlla il calendario per i dettagli delle interrogazioni!"); }
+        document.getElementById('in-mat').onchange = function() { document.getElementById('in-altro').style.display = this.value==='Altro'?'block':'none'; };
     </script>
 </body>
 </html>
