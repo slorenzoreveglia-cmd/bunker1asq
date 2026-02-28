@@ -3,207 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1ASQ - BUNKER</title>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>1ASQ - BUNKER CLANDESTINO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0d1117;
-            --card: #161b22;
-            --accent: #e94560;
-            --text: #c9d1d9;
+            --bg-color: #0d111a;
+            --panel-bg: #161b2b;
+            --accent-red: #e94560;
+            --border-blue: #242c42;
+            --text-gray: #8b949e;
         }
 
         body {
-            background-color: var(--bg);
+            background-color: var(--bg-color);
             color: white;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Roboto Mono', monospace;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
-        /* --- LOGIN --- */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
-        .logo { font-family: 'Creepster', cursive; font-size: 70px; color: white; text-shadow: 0 0 15px var(--accent); margin-bottom: 20px; }
-        .login-card { background: var(--card); padding: 30px; border-radius: 12px; width: 300px; border: 1px solid #30363d; }
-
-        /* --- HEADER --- */
-        #bunker-screen { width: 100%; max-width: 900px; padding: 20px; display: none; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .skull { cursor: pointer; border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px; background: rgba(233, 69, 96, 0.1); }
-
-        /* --- CALENDARIO --- */
-        .cal-box { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #30363d; }
-        .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { color: var(--text); padding: 10px; font-size: 0.8rem; text-transform: uppercase; }
-        td { height: 90px; width: 14%; border: 1px solid #30363d; vertical-align: top; padding: 5px; cursor: pointer; position: relative; }
-        td:hover { background: #21262d; }
-        td.past { background: #0d1117; color: #484f58; cursor: default; }
-        
-        .day-n { float: right; font-size: 12px; color: var(--text); }
-        .ev-tag { background: var(--accent); font-size: 10px; padding: 2px 4px; border-radius: 3px; margin-top: 18px; font-weight: bold; overflow: hidden; }
-        .ev-ver { background: #3498db; }
-
-        /* --- MODALI --- */
-        .modal { 
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background: var(--card); border: 2px solid var(--accent); padding: 20px; 
-            border-radius: 10px; z-index: 100; width: 85%; max-width: 350px; 
+        /* --- LOGIN (Replicato da Login_Bello.png) --- */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
         }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 50; }
+
+        .iasq-logo {
+            font-family: 'Creepster', cursive;
+            font-size: 100px;
+            color: #d1d1d1;
+            text-shadow: 0 0 25px rgba(233, 69, 96, 0.8), 5px 5px 5px #000;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+        }
+
+        .login-card {
+            background: var(--panel-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            width: 360px;
+            border: 1px solid var(--border-blue);
+            text-align: center;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #0d1117;
+            border: 1px solid var(--border-blue);
+            color: white;
+            border-radius: 8px;
+            font-family: 'Roboto Mono', monospace;
+            box-sizing: border-box;
+        }
+
+        .btn-accedi {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 18px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-accedi:hover { background: #ff2e63; transform: scale(1.02); }
+
+        /* --- INTERFACCIA BUNKER (Calendario_bello.png) --- */
+        #bunker-screen { display: none; width: 100%; padding: 20px; max-width: 1100px; }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .skull-notif {
+            background: rgba(233, 69, 96, 0.15);
+            border: 1.5px solid var(--accent-red);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.3);
+            font-weight: bold;
+        }
+
+        .alunno-title {
+            font-family: 'Creepster', cursive;
+            font-size: 32px;
+            color: var(--accent-red);
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        /* --- TABELLA CALENDARIO --- */
+        .calendar-wrap {
+            background: var(--panel-bg);
+            border-radius: 15px;
+            border: 1px solid var(--border-blue);
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-name { font-size: 28px; font-weight: bold; text-transform: lowercase; }
+
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { color: white; padding: 15px; border-bottom: 1.5px solid var(--border-blue); font-size: 14px; }
+        td { height: 110px; border: 0.5px solid var(--border-blue); vertical-align: top; padding: 5px; }
         
-        input, select, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white; }
-        .btn-red { background: var(--accent); border: none; font-weight: bold; cursor: pointer; }
+        .day-label { float: right; font-size: 14px; color: var(--text-gray); margin: 5px; }
+
+        .event-bar {
+            background: var(--accent-red);
+            color: white;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 25px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* --- MODALE NOTIFICHE (Notifica_bella.png) --- */
+        #destini-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-red);
+            width: 400px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 100px rgba(0,0,0,0.9), 0 0 20px rgba(233, 69, 96, 0.4);
+            z-index: 1000;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+        }
+
+        .notif-item {
+            background: #1e253a;
+            border-left: 4px solid var(--accent-red);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .notif-materia { color: var(--accent-red); font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+        .notif-data { font-size: 13px; color: var(--text-gray); }
+
+        .btn-exit { background: #242c42; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="logo">1ASQ</div>
+        <div class="iasq-logo">IASQ</div>
         <div class="login-card">
-            <select id="user-list"><option>Caricamento...</option></select>
-            <input type="password" id="user-pin" placeholder="PIN">
-            <button class="btn-red" onclick="doLogin()">ENTRA</button>
+            <select id="user-select">
+                <option value="">Caricamento soldati...</option>
+            </select>
+            <input type="password" id="pin-input" placeholder="Inserisci PIN">
+            <button class="btn-accedi" onclick="tryLogin()">ACCEDI AL BUNKER</button>
         </div>
     </div>
 
     <div id="bunker-screen">
-        <div class="top-bar">
-            <button onclick="location.reload()" style="width:auto; padding:5px 10px;">ESCI</button>
-            <div class="skull" onclick="showNotif()">💀 <span id="n-val">0</span> +</div>
-            <div style="font-family:'Creepster'; color:var(--accent); font-size:20px;">SOLDATO: <span id="u-name"></span></div>
+        <div class="header-top">
+            <button class="btn-exit" onclick="location.reload()">← EXIT</button>
+            <div class="skull-notif" onclick="openDestini()">
+                💀 <span id="skull-count">0</span> +
+            </div>
+            <button class="btn-exit" style="background:var(--border-blue)">🔓 PIN</button>
         </div>
 
-        <div class="cal-box">
-            <div class="cal-nav">
-                <button onclick="moveMonth(-1)" style="width:auto;">&lt;</button>
-                <h3 id="m-name" style="text-transform: capitalize;"></h3>
-                <button onclick="moveMonth(1)" style="width:auto;">&gt;</button>
+        <div class="alunno-title">ALUNNO: <span id="current-name"></span></div>
+
+        <div class="calendar-wrap">
+            <div class="month-header">
+                <div class="month-name" id="month-display">febbraio 2026</div>
+                <div>
+                    <button class="btn-exit" style="margin-right:5px" onclick="moveMonth(-1)"> < </button>
+                    <button class="btn-exit" onclick="moveMonth(1)"> > </button>
+                </div>
             </div>
             <table>
-                <thead><tr><th>lun</th><th>mar</th><th>mer</th><th>gio</th><th>ven</th><th>sab</th><th>dom</th></tr></thead>
-                <tbody id="cal-body"></tbody>
+                <thead>
+                    <tr><th>lun</th><th>mar</th><th>mer</th><th>gio</th><th>ven</th><th>sab</th><th>dom</th></tr>
+                </thead>
+                <tbody id="calendar-body"></tbody>
             </table>
         </div>
     </div>
 
-    <div id="modal-add" class="modal">
-        <h3 id="add-date" style="margin:0; color:var(--accent);"></h3>
-        <select id="in-tipo"><option value="interrogazione">Interrogazione 📝</option><option value="verifica">Verifica 📚</option></select>
-        <select id="in-mat">
-            <option value="Italiano">Italiano</option><option value="Matematica">Matematica</option>
-            <option value="Inglese">Inglese</option><option value="TTRG">TTRG</option>
-            <option value="Diritto">Diritto</option><option value="Altro">-- ALTRO --</option>
-        </select>
-        <input type="text" id="in-altro" placeholder="Nome materia..." style="display:none;">
-        <select id="in-alunno"></select>
-        <input type="text" id="in-desc" placeholder="Descrizione">
-        <button class="btn-red" id="btn-save" onclick="save()">SALVA</button>
-        <button onclick="closeAll()">ANNULLA</button>
+    <div id="modal-overlay" class="modal-overlay" onclick="closeDestini()"></div>
+    <div id="destini-modal">
+        <h2 style="font-family:'Creepster'; color:var(--accent-red); margin-top:0;">I TUOI DESTINI</h2>
+        <div id="destini-content"></div>
+        <button class="btn-accedi" style="background:#242c42; margin-top:20px;" onclick="closeDestini()">CHIUDI</button>
     </div>
 
-    <div id="overlay" class="overlay" onclick="closeAll()"></div>
-
     <script>
-        const SCRIPT_URL = "INSERISCI_QUI_IL_TUO_URL_EXEC";
+        const SCRIPT_URL = "INSERISCI_QUI_IL_TUO_URL_APP_SCRIPT";
         let db = { events: [], pins: {} };
-        let vDate = new Date();
-        let selD = "";
+        let currentMonthDate = new Date();
 
         window.onload = async () => {
-            const r = await fetch(SCRIPT_URL, {method:'POST', body:JSON.stringify({action:'getInitialData'})});
-            db = await r.json();
-            const s = document.getElementById('user-list');
-            s.innerHTML = "";
-            Object.keys(db.pins).sort().forEach(n => s.innerHTML += `<option value="${n}">${n}</option>`);
+            try {
+                const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: 'getInitialData'}) });
+                db = await res.json();
+                
+                const sel = document.getElementById('user-select');
+                sel.innerHTML = '<option value="">Seleziona Alunno</option>';
+                Object.keys(db.pins).sort().forEach(name => {
+                    sel.innerHTML += `<option value="${name}">${name}</option>`;
+                });
+            } catch (e) { console.error("Errore caricamento database"); }
         };
 
-        function doLogin() {
-            const u = document.getElementById('user-list').value;
-            const p = document.getElementById('user-pin').value;
-            if (db.pins[u] === p) {
-                document.getElementById('login-screen').style.display='none';
-                document.getElementById('bunker-screen').style.display='block';
-                document.getElementById('u-name').innerText = u.toUpperCase();
-                render();
-            } else { alert("PIN ERRATO!"); }
+        function tryLogin() {
+            const user = document.getElementById('user-select').value;
+            const pin = document.getElementById('pin-input').value;
+            if (db.pins[user] === pin) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('bunker-screen').style.display = 'block';
+                document.getElementById('current-name').innerText = user.toUpperCase();
+                renderCalendar();
+            } else { alert("ACCESSO NEGATO: PIN ERRATO"); }
         }
 
-        function render() {
-            const b = document.getElementById('cal-body'); b.innerHTML = "";
-            const y = vDate.getFullYear(), m = vDate.getMonth();
-            document.getElementById('m-name').innerText = new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(vDate);
+        function renderCalendar() {
+            const body = document.getElementById('calendar-body');
+            body.innerHTML = '';
+            const y = currentMonthDate.getFullYear();
+            const m = currentMonthDate.getMonth();
             
-            let first = new Date(y, m, 1).getDay();
-            first = first === 0 ? 6 : first - 1;
-            const days = new Date(y, m + 1, 0).getDate();
+            document.getElementById('month-display').innerText = 
+                new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' }).format(currentMonthDate);
 
-            let d = 1;
+            let firstDay = new Date(y, m, 1).getDay();
+            firstDay = firstDay === 0 ? 6 : firstDay - 1; 
+            const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+            let day = 1;
             for (let i = 0; i < 6; i++) {
-                let r = document.createElement('tr');
+                let row = document.createElement('tr');
                 for (let j = 0; j < 7; j++) {
-                    let c = document.createElement('td');
-                    if (i === 0 && j < first) { c.style.border="none"; }
-                    else if (d <= days) {
-                        const cur = new Date(y,m,d);
-                        const dStr = cur.toLocaleDateString('en-CA'); // YYYY-MM-DD sicuro
-                        c.innerHTML = `<span class="day-n">${d}</span>`;
-                        if (cur < new Date().setHours(0,0,0,0)) c.className = "past";
+                    let cell = document.createElement('td');
+                    if (i === 0 && j < firstDay) {
+                        cell.style.border = "none";
+                    } else if (day <= daysInMonth) {
+                        cell.innerHTML = `<span class="day-label">${day}</span>`;
+                        const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                         
-                        db.events.filter(e => e.data === dStr).forEach(e => {
-                            c.innerHTML += `<div class="ev-tag ${e.tipo==='verifica'?'ev-ver':''}">${e.materia.toUpperCase()}</div>`;
+                        db.events.filter(e => e.data.startsWith(dateStr)).forEach(e => {
+                            cell.innerHTML += `<div class="event-bar">${e.materia.toUpperCase()}</div>`;
                         });
-
-                        if (cur >= new Date().setHours(0,0,0,0)) c.onclick = () => openAdd(dStr);
-                        d++;
+                        day++;
                     }
-                    r.appendChild(c);
+                    row.appendChild(cell);
                 }
-                b.appendChild(r);
-                if (d > days) break;
+                body.appendChild(row);
+                if (day > daysInMonth) break;
             }
-            document.getElementById('n-val').innerText = db.events.length;
+            document.getElementById('skull-count').innerText = db.events.length;
         }
 
-        function openAdd(date) {
-            selD = date;
-            document.getElementById('add-date').innerText = date;
-            const s = document.getElementById('in-alunno');
-            s.innerHTML = '<option value="TUTTA LA CLASSE">TUTTA LA CLASSE</option>';
-            Object.keys(db.pins).sort().forEach(n => s.innerHTML += `<option value="${n}">${n}</option>`);
-            document.getElementById('modal-add').style.display='block';
-            document.getElementById('overlay').style.display='block';
+        function openDestini() {
+            const content = document.getElementById('destini-content');
+            content.innerHTML = '';
+            db.events.sort((a,b) => new Date(a.data) - new Date(b.data)).forEach(e => {
+                content.innerHTML += `
+                    <div class="notif-item">
+                        <div class="notif-materia">${e.materia.toUpperCase()}</div>
+                        <div class="notif-data">📅 Data: ${e.data}</div>
+                    </div>`;
+            });
+            document.getElementById('destini-modal').style.display = 'block';
+            document.getElementById('modal-overlay').style.display = 'block';
         }
 
-        async function save() {
-            const btn = document.getElementById('btn-save');
-            btn.innerText = "INVIO..."; btn.disabled = true;
-            
-            let mat = document.getElementById('in-mat').value;
-            if (mat === 'Altro') mat = document.getElementById('in-altro').value;
-
-            const data = {
-                action: 'saveEvent',
-                event: {
-                    id: Date.now(),
-                    data: selD,
-                    materia: mat,
-                    tipo: document.getElementById('in-tipo').value,
-                    alunno: document.getElementById('in-alunno').value,
-                    desc: document.getElementById('in-desc').value
-                }
-            };
-
-            await fetch(SCRIPT_URL, {method:'POST', body:JSON.stringify(data)});
-            location.reload();
+        function closeDestini() {
+            document.getElementById('destini-modal').style.display = 'none';
+            document.getElementById('modal-overlay').style.display = 'none';
         }
 
-        function moveMonth(v) { vDate.setMonth(vDate.getMonth()+v); render(); }
-        function closeAll() { document.querySelectorAll('.modal, .overlay').forEach(e => e.style.display='none'); }
-        function showNotif() { alert("Controlla il calendario per i dettagli delle interrogazioni!"); }
-        document.getElementById('in-mat').onchange = function() { document.getElementById('in-altro').style.display = this.value==='Altro'?'block':'none'; };
+        function moveMonth(v) { currentMonthDate.setMonth(currentMonthDate.getMonth() + v); renderCalendar(); }
     </script>
 </body>
 </html>
