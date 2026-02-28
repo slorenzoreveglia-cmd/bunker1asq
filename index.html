@@ -6,69 +6,26 @@
     <title>1ASQ - BUNKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0d111a;
-            --panel: #161b2b;
-            --red: #e94560;
-            --blue: #3498db;
-            --border: #242c42;
-            --gray: #8b949e;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* --- LOGIN BELLO --- */
+        :root { --bg: #0d111a; --panel: #161b2b; --red: #e94560; --blue: #3498db; --border: #242c42; --gray: #8b949e; }
+        body { background: var(--bg); color: white; font-family: 'Roboto Mono', monospace; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* LOGIN STYLE */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
-        .iasq-logo {
-            font-family: 'Creepster', cursive;
-            font-size: 100px;
-            color: #d1d1d1;
-            text-shadow: 0 0 25px rgba(233, 69, 96, 0.8), 5px 5px 5px #000;
-            margin-bottom: 20px;
-        }
-        .login-card {
-            background: var(--panel);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-            width: 340px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-        select, input, textarea {
-            width: 100%; padding: 12px; margin: 10px 0; background: #0d1117;
-            border: 1px solid var(--border); color: white; border-radius: 8px;
-            font-family: 'Roboto Mono', monospace; box-sizing: border-box;
-        }
-        .btn-main {
-            background: var(--red); color: white; border: none; padding: 15px;
-            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer;
-            text-transform: uppercase; transition: 0.3s;
-        }
+        .iasq-logo { font-family: 'Creepster', cursive; font-size: 100px; color: #d1d1d1; text-shadow: 0 0 25px var(--red); margin-bottom: 20px; }
+        .login-card { background: var(--panel); padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); width: 340px; border: 1px solid var(--border); text-align: center; }
+        
+        select, input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid var(--border); color: white; border-radius: 8px; font-family: 'Roboto Mono', monospace; box-sizing: border-box; }
+        .btn-main { background: var(--red); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-main:disabled { background: #555; cursor: not-allowed; }
 
-        /* --- BUNKER BELLO --- */
+        /* BUNKER STYLE */
         #bunker-screen { display: none; width: 100%; padding: 20px; max-width: 1100px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .skull-notif {
-            background: rgba(233, 69, 96, 0.15); border: 1.5px solid var(--red);
-            padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;
-        }
+        .skull-notif { background: rgba(233, 69, 96, 0.15); border: 1.5px solid var(--red); padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; }
         .alunno-title { font-family: 'Creepster', cursive; font-size: 32px; color: var(--red); margin: 15px 0; }
 
-        /* --- CALENDARIO (Pari pari calendario_bello.png) --- */
-        .calendar-wrap {
-            background: var(--panel); border-radius: 15px; border: 1px solid var(--border);
-            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        /* CALENDARIO BELLO */
+        .calendar-wrap { background: var(--panel); border-radius: 15px; border: 1px solid var(--border); padding: 20px; }
         .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th { color: var(--gray); padding: 10px; font-size: 13px; text-transform: lowercase; }
@@ -77,26 +34,13 @@
         td.today { border: 1.5px solid var(--red); background: rgba(233, 69, 96, 0.05); }
         .day-label { float: right; font-size: 12px; color: var(--gray); margin: 3px; }
 
-        /* TAG EVENTI */
-        .event-tag {
-            font-size: 9px; padding: 3px 6px; border-radius: 4px; margin-top: 20px;
-            font-weight: bold; overflow: hidden; text-overflow: ellipsis;
-            display: block; margin-bottom: 2px;
-        }
+        .event-tag { font-size: 9px; padding: 3px 6px; border-radius: 4px; margin-top: 5px; font-weight: bold; display: block; overflow: hidden; text-overflow: ellipsis; }
         .tag-interrogazione { background: var(--red); color: white; }
         .tag-verifica { background: var(--blue); color: white; }
         .tag-altro { background: #f1c40f; color: black; }
 
-        /* --- MODALE --- */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 999;
-        }
-        .modal-box {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: var(--panel); border: 2px solid var(--red); width: 90%; max-width: 450px;
-            padding: 25px; border-radius: 20px; z-index: 1000;
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 999; }
+        .modal-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel); border: 2px solid var(--red); width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; z-index: 1000; }
     </style>
 </head>
 <body>
@@ -104,25 +48,25 @@
     <div id="login-screen">
         <div class="iasq-logo">IASQ</div>
         <div class="login-card">
-            <select id="user-select"><option>📡 CONNESSIONE IN CORSO...</option></select>
-            <input type="password" id="pin-input" placeholder="PIN SEGRETO">
-            <button class="btn-main" onclick="tryLogin()">ACCEDI AL SISTEMA</button>
+            <select id="user-select"><option>📡 CARICAMENTO...</option></select>
+            <input type="password" id="pin-input" placeholder="PIN">
+            <button class="btn-main" onclick="tryLogin()">ENTRA</button>
         </div>
     </div>
 
     <div id="bunker-screen">
         <div class="header-top">
-            <button onclick="location.reload()" style="background:none; border:none; color:white; cursor:pointer;">← EXIT</button>
+            <button onclick="location.reload()" style="background:none; border:none; color:white; cursor:pointer;">← ESCI</button>
             <div class="skull-notif" onclick="openDestini()">💀 <span id="skull-count">0</span> +</div>
-            <button style="background:#242c42; border:none; color:white; padding:5px 12px; border-radius:5px;">👤 PIN</button>
+            <div style="font-size:12px; color:var(--red);">LIVE STATUS: <span style="color:green">ACTIVE</span></div>
         </div>
         <div class="alunno-title">SOLDATO: <span id="current-name"></span></div>
         <div class="calendar-wrap">
             <div class="month-header">
-                <div id="month-display" style="font-size: 24px; font-weight: bold; text-transform: lowercase;"></div>
+                <div id="month-display" style="font-size: 24px; font-weight: bold;"></div>
                 <div>
-                    <button onclick="moveMonth(-1)" style="background:none; border:none; color:white; cursor:pointer; font-size: 20px;"> < </button>
-                    <button onclick="moveMonth(1)" style="background:none; border:none; color:white; cursor:pointer; font-size: 20px;"> > </button>
+                    <button onclick="moveMonth(-1)" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;"> < </button>
+                    <button onclick="moveMonth(1)" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;"> > </button>
                 </div>
             </div>
             <table>
@@ -136,30 +80,20 @@
     <div id="modal-add" class="modal-box">
         <h2 style="font-family:'Creepster'; color:var(--red); margin:0;">NUOVO DESTINO</h2>
         <p id="sel-date-txt" style="font-size:11px; color:var(--gray);"></p>
-        
-        <select id="in-tipo" onchange="toggleTipo()">
-            <option value="interrogazione">Interrogazione 📝</option>
-            <option value="verifica">Verifica 📚</option>
-        </select>
-        
+        <select id="in-tipo" onchange="toggleTipo()"><option value="interrogazione">Interrogazione 📝</option><option value="verifica">Verifica 📚</option></select>
         <select id="in-materia" onchange="document.getElementById('in-altro').style.display=(this.value=='Altro'?'block':'none')">
-            <option value="Matematica">Matematica</option><option value="Fisica">Fisica</option>
-            <option value="Inglese">Inglese</option><option value="Diritto">Diritto</option>
-            <option value="TTRG">TTRG</option><option value="Scienze">Scienze</option>
-            <option value="Storia">Storia</option><option value="Altro">-- ALTRO --</option>
+            <option value="Matematica">Matematica</option><option value="Fisica">Fisica</option><option value="Inglese">Inglese</option><option value="Diritto">Diritto</option><option value="TTRG">TTRG</option><option value="Scienze">Scienze</option><option value="Storia">Storia</option><option value="Altro">-- ALTRO --</option>
         </select>
         <input type="text" id="in-altro" placeholder="Titolo materia..." style="display:none;">
-
         <div id="box-alunni">
             <div style="display:flex; gap:5px;">
-                <select id="sel-alunno-list" style="flex:2;"><option value="">Scegli...</option></select>
+                <select id="sel-alunno-list" style="flex:2;"><option value="">Aggiungi Alunno...</option></select>
                 <input type="number" id="rand-n" placeholder="Q.tà" style="flex:1;">
                 <button onclick="estrai()" style="background:var(--blue); border:none; color:white; border-radius:8px; padding:0 10px; cursor:pointer;">🎲</button>
             </div>
         </div>
-        <textarea id="in-final" placeholder="Alunni selezionati..." rows="2"></textarea>
-        <textarea id="in-desc" placeholder="Descrizione (opzionale)" rows="2"></textarea>
-        
+        <textarea id="in-final" placeholder="Lista bersagli..." rows="2"></textarea>
+        <textarea id="in-desc" placeholder="Note (opzionale)" rows="2"></textarea>
         <div style="display:flex; gap:10px; margin-top:15px;">
             <button class="btn-main" id="btn-save" onclick="salva()">APPLICA</button>
             <button class="btn-main" style="background:#242c42;" onclick="closeAll()">ANNULLA</button>
@@ -168,7 +102,7 @@
 
     <div id="modal-list" class="modal-box">
         <h2 style="font-family:'Creepster'; color:var(--red);">DESTINI</h2>
-        <div id="destini-content"></div>
+        <div id="destini-content" style="max-height:300px; overflow-y:auto;"></div>
         <button class="btn-main" style="background:#242c42; margin-top:15px;" onclick="closeAll()">CHIUDI</button>
     </div>
 
@@ -177,51 +111,41 @@
         let db = { events: [], pins: {} };
         let curM = new Date();
         let selD = "";
+        let loggedUser = "";
 
-        // FUNZIONE SINCRO BLINDATA
-        async function loadData() {
+        async function sync() {
             try {
-                // Tentativo 1: GET semplice
                 const r = await fetch(`${SCRIPT_URL}?action=getInitialData`);
                 db = await r.json();
                 fillSelects();
-            } catch (e) {
-                console.log("GET fallito, provo POST...");
-                try {
-                    // Tentativo 2: POST
-                    const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action:'getInitialData'}) });
-                    db = await r.json();
-                    fillSelects();
-                } catch (e2) {
-                    document.getElementById('user-select').innerHTML = "<option>ERRORE DI CONNESSIONE</option>";
-                    alert("ERRORE DATABASE: Controlla che lo script sia pubblicato come 'Anyone'!");
-                }
-            }
+                if(loggedUser) render(); 
+            } catch(e) { console.error("Sync Error"); }
         }
 
         function fillSelects() {
             const s1 = document.getElementById('user-select');
             const s2 = document.getElementById('sel-alunno-list');
             const names = Object.keys(db.pins).sort();
-            s1.innerHTML = '<option value="">Chi sei?</option>';
-            s2.innerHTML = '<option value="">Aggiungi Alunno...</option>';
+            s1.innerHTML = '<option value="">Soldato...</option>';
+            s2.innerHTML = '<option value="">Aggiungi...</option>';
             names.forEach(n => {
                 s1.innerHTML += `<option value="${n}">${n}</option>`;
                 s2.innerHTML += `<option value="${n}">${n}</option>`;
             });
         }
 
-        window.onload = loadData;
+        window.onload = sync;
 
         function tryLogin() {
             const u = document.getElementById('user-select').value;
             const p = document.getElementById('pin-input').value;
             if (db.pins[u] === p) {
+                loggedUser = u;
                 document.getElementById('login-screen').style.display='none';
                 document.getElementById('bunker-screen').style.display='block';
                 document.getElementById('current-name').innerText = u.toUpperCase();
                 render();
-            } else alert("PIN ERRATO!");
+            } else alert("ACCESSO NEGATO!");
         }
 
         function render() {
@@ -230,11 +154,9 @@
             const y = curM.getFullYear(), m = curM.getMonth();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('month-display').innerText = new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(curM);
-            
             let first = new Date(y, m, 1).getDay();
             first = first === 0 ? 6 : first - 1;
             const days = new Date(y, m + 1, 0).getDate();
-
             let d = 1;
             for (let i = 0; i < 6; i++) {
                 let row = document.createElement('tr');
@@ -246,12 +168,10 @@
                         cell.innerHTML = `<span class="day-label">${d}</span>`;
                         if (dStr < today) cell.classList.add('past');
                         if (dStr === today) cell.classList.add('today');
-                        
                         db.events.filter(e => e.data.startsWith(dStr)).forEach(e => {
                             const c = e.materia_special ? 'tag-altro' : `tag-${e.tipo}`;
                             cell.innerHTML += `<div class="event-tag ${c}">${e.materia.toUpperCase()}</div>`;
                         });
-
                         if (dStr >= today) cell.onclick = () => { selD = dStr; openAdd(); };
                         d++;
                     }
@@ -263,28 +183,15 @@
             document.getElementById('skull-count').innerText = db.events.length;
         }
 
-        function openAdd() {
-            document.getElementById('sel-date-txt').innerText = "DATA: " + selD;
-            document.getElementById('modal-add').style.display='block';
-            document.getElementById('modal-overlay').style.display='block';
-        }
-
-        function toggleTipo() {
-            const isV = document.getElementById('in-tipo').value === 'verifica';
-            document.getElementById('box-alunni').style.display = isV ? 'none' : 'block';
-            document.getElementById('in-final').value = isV ? "TUTTA LA CLASSE" : "";
-        }
-
-        document.getElementById('sel-alunno-list').onchange = function() {
-            const f = document.getElementById('in-final');
-            f.value = f.value ? f.value + ", " + this.value : this.value;
-        };
+        function openAdd() { document.getElementById('sel-date-txt').innerText = "DATA: " + selD; document.getElementById('modal-add').style.display='block'; document.getElementById('modal-overlay').style.display='block'; }
+        function toggleTipo() { const isV = document.getElementById('in-tipo').value === 'verifica'; document.getElementById('box-alunni').style.display = isV ? 'none' : 'block'; document.getElementById('in-final').value = isV ? "TUTTA LA CLASSE" : ""; }
+        document.getElementById('sel-alunno-list').onchange = function() { const f = document.getElementById('in-final'); f.value = f.value ? f.value + ", " + this.value : this.value; };
 
         function estrai() {
             const n = parseInt(document.getElementById('rand-n').value);
             const names = Object.keys(db.pins);
             const res = [];
-            while(res.length < n) {
+            while(res.length < n && res.length < names.length) {
                 const r = names[Math.floor(Math.random()*names.length)];
                 if(!res.includes(r)) res.push(r);
             }
@@ -293,29 +200,28 @@
 
         async function salva() {
             const btn = document.getElementById('btn-save');
-            btn.innerText = "SALVATAGGIO..."; btn.disabled = true;
+            btn.innerText = "INVIO..."; btn.disabled = true;
             let mat = document.getElementById('in-materia').value;
             let sp = false;
             if(mat === 'Altro') { mat = document.getElementById('in-altro').value; sp = true; }
-
-            const payload = {
-                action: 'saveEvent',
-                event: { id: Date.now(), data: selD, tipo: document.getElementById('in-tipo').value, materia: mat, alunno: document.getElementById('in-final').value, desc: document.getElementById('in-desc').value, materia_special: sp }
-            };
-
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            location.reload();
+            const payload = { action: 'saveEvent', event: { id: Date.now(), data: selD, tipo: document.getElementById('in-tipo').value, materia: mat, alunno: document.getElementById('in-final').value, desc: document.getElementById('in-desc').value, materia_special: sp } };
+            
+            try {
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                closeAll();
+                btn.innerText = "APPLICA"; btn.disabled = false;
+                setTimeout(sync, 1500); // Aggiorna i dati dopo 1.5 secondi senza ricaricare la pagina
+            } catch(e) { alert("Errore Invio"); btn.disabled = false; }
         }
 
         function openDestini() {
             const c = document.getElementById('destini-content'); c.innerHTML = '';
             db.events.sort((a,b)=>a.data.localeCompare(b.data)).forEach(e => {
                 c.innerHTML += `<div style="background:#1e253a; border-left:4px solid var(--red); padding:10px; margin-bottom:10px; border-radius:8px;">
-                    <b style="color:var(--red)">${e.materia.toUpperCase()}</b><br><small>📅 ${e.data} - ${e.alunno}</small>
+                    <b style="color:var(--red)">${e.materia.toUpperCase()}</b><br><small>${e.data} - ${e.alunno}</small>
                 </div>`;
             });
-            document.getElementById('modal-list').style.display='block';
-            document.getElementById('modal-overlay').style.display='block';
+            document.getElementById('modal-list').style.display='block'; document.getElementById('modal-overlay').style.display='block';
         }
 
         function closeAll() { document.querySelectorAll('.modal-box, .modal-overlay').forEach(e=>e.style.display='none'); }
