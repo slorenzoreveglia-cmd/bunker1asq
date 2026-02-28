@@ -25,7 +25,7 @@
             min-height: 100vh;
         }
 
-        /* --- LOGIN (Bello) --- */
+        /* --- LOGIN (Bello come in Login_bello.png) --- */
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -75,9 +75,11 @@
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
+            transition: 0.3s;
         }
+        .btn-accedi:hover { background: #ff2e63; transform: scale(1.02); }
 
-        /* --- BUNKER (Bello) --- */
+        /* --- CALENDARIO (Bello come in calendario_bello.png) --- */
         #bunker-screen { display: none; width: 100%; padding: 20px; max-width: 1000px; }
 
         .header-top {
@@ -103,7 +105,6 @@
             margin: 20px 0;
         }
 
-        /* --- CALENDARIO (Bello) --- */
         .calendar-wrap {
             background: var(--panel-bg);
             border-radius: 15px;
@@ -120,8 +121,7 @@
 
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th { color: var(--text-gray); padding: 10px; font-size: 12px; text-transform: lowercase; }
-        td { height: 100px; border: 0.5px solid var(--border-blue); vertical-align: top; padding: 5px; cursor: pointer; }
-        td:hover { background: rgba(255,255,255,0.02); }
+        td { height: 100px; border: 0.5px solid var(--border-blue); vertical-align: top; padding: 5px; }
         
         .day-label { float: right; font-size: 12px; color: var(--text-gray); }
 
@@ -138,7 +138,7 @@
             text-overflow: ellipsis;
         }
 
-        /* --- MODALE (Bella) --- */
+        /* --- MODALE (Come in notifica_bella.png) --- */
         #modal-overlay {
             display: none;
             position: fixed;
@@ -175,9 +175,9 @@
     <div id="login-screen">
         <div class="iasq-logo">IASQ</div>
         <div class="login-card">
-            <select id="user-select"><option>Sincronizzazione...</option></select>
+            <select id="user-select"><option>Inizializzazione Bunker...</option></select>
             <input type="password" id="pin-input" placeholder="PIN">
-            <button class="btn-accedi" onclick="tryLogin()">ENTRA NEL BUNKER</button>
+            <button class="btn-accedi" onclick="tryLogin()">ACCEDI</button>
         </div>
     </div>
 
@@ -192,7 +192,7 @@
 
         <div class="calendar-wrap">
             <div class="month-header">
-                <div id="month-display" style="font-size: 24px; font-weight: bold;"></div>
+                <div id="month-display" style="font-size: 24px; font-weight: bold; text-transform: lowercase;"></div>
                 <div>
                     <button onclick="moveMonth(-1)" style="background:none; border:none; color:white; cursor:pointer; font-size: 20px;"> < </button>
                     <button onclick="moveMonth(1)" style="background:none; border:none; color:white; cursor:pointer; font-size: 20px;"> > </button>
@@ -213,32 +213,42 @@
     </div>
 
     <script>
-        // *** METTI QUI IL TUO URL ***
+        // *** IMPORTANTE: USA IL TUO URL QUI ***
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxBD-5Cc2nVUPTTdM2if2jRvNfezWklU1uCFOENzPWDyVMKL1_BfRUMqzqfwokgQ8gyQ/exec";
         
         let db = { events: [], pins: {} };
         let currentMonthDate = new Date();
 
         window.onload = async () => {
+            const sel = document.getElementById('user-select');
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'cors', // Cruciale per evitare blocchi
-                    body: JSON.stringify({ action: 'getInitialData' })
-                });
+                // Proviamo con GET per evitare l'errore 405
+                const response = await fetch(`${SCRIPT_URL}?action=getInitialData`);
                 db = await response.json();
                 
-                const sel = document.getElementById('user-select');
                 sel.innerHTML = '<option value="">Seleziona Alunno</option>';
-                
                 if (db.pins) {
                     Object.keys(db.pins).sort().forEach(name => {
                         sel.innerHTML += `<option value="${name}">${name}</option>`;
                     });
                 }
             } catch (e) {
-                alert("Errore di connessione al database. Controlla l'URL!");
-                console.error(e);
+                console.log("Tentativo GET fallito, provo POST...");
+                // Se il GET fallisce, proviamo il POST (alcuni script sono configurati così)
+                try {
+                    const resPost = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'getInitialData' })
+                    });
+                    db = await resPost.json();
+                    sel.innerHTML = '<option value="">Seleziona Alunno</option>';
+                    Object.keys(db.pins).sort().forEach(name => {
+                        sel.innerHTML += `<option value="${name}">${name}</option>`;
+                    });
+                } catch (err) {
+                    sel.innerHTML = '<option>Errore Database</option>';
+                    alert("ERRORE CRITICO: Lo script Google non risponde. Controlla di averlo pubblicato come 'Web App' e con accesso a 'Anyone'.");
+                }
             }
         };
 
@@ -251,7 +261,7 @@
                 document.getElementById('current-name').innerText = user.toUpperCase();
                 renderCalendar();
             } else {
-                alert("PIN ERRATO O UTENTE NON SELEZIONATO");
+                alert("PIN ERRATO!");
             }
         }
 
@@ -277,12 +287,11 @@
                         cell.style.border = "none";
                     } else if (day <= daysInMonth) {
                         cell.innerHTML = `<span class="day-label">${day}</span>`;
-                        // Formato data ISO per il confronto
                         const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                         
                         if (db.events) {
                             db.events.filter(e => e.data && e.data.startsWith(dateStr)).forEach(e => {
-                                cell.innerHTML += `<div class="event-bar">${e.materia ? e.materia.toUpperCase() : 'EVENTO'}</div>`;
+                                cell.innerHTML += `<div class="event-bar">${e.materia.toUpperCase()}</div>`;
                             });
                         }
                         day++;
@@ -298,18 +307,21 @@
         function openDestini() {
             const content = document.getElementById('destini-content');
             content.innerHTML = '';
-            if (db.events && db.events.length > 0) {
-                db.events.sort((a,b) => new Date(a.data) - new Date(b.data)).forEach(e => {
+            const today = new Date().toISOString().split('T')[0];
+            
+            const future = db.events.filter(e => e.data >= today).sort((a,b) => a.data.localeCompare(b.data));
+            
+            if (future.length > 0) {
+                future.forEach(e => {
                     content.innerHTML += `
                         <div class="notif-item">
-                            <div style="color:var(--accent-red); font-weight:bold;">${e.materia || '---'}</div>
-                            <div style="font-size:12px; color:white;">${e.alunno || ''}</div>
-                            <div style="font-size:11px; color:var(--text-gray);">📅 ${e.data || ''}</div>
+                            <div style="color:var(--accent-red); font-weight:bold;">${e.materia.toUpperCase()}</div>
+                            <div style="font-size:12px; color:white;">${e.alunno}</div>
+                            <div style="font-size:11px; color:var(--text-gray);">📅 ${e.data}</div>
                         </div>`;
                 });
-            } else {
-                content.innerHTML = "<p>Nessun destino rilevato.</p>";
-            }
+            } else { content.innerHTML = "<p>Nessun pericolo futuro.</p>"; }
+            
             document.getElementById('destini-modal').style.display = 'block';
             document.getElementById('modal-overlay').style.display = 'block';
         }
