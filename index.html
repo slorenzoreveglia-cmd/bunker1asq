@@ -2,197 +2,295 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SU_Streaming">
-    
-    <link rel="manifest" href="manifest.json">
-
-    <link rel="apple-touch-icon" href="LINK_DEL_TUO_LOGO_QUI">
-    <link rel="icon" href="LINK_DEL_TUO_LOGO_QUI">
-
-    <title>SU_Streaming</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1ASQ - BUNKER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        :root { --bg: #0d111a; --panel: #161b2b; --red: #e94560; --blue: #3498db; --border: #242c42; --gray: #8b949e; }
+        body { background: var(--bg); color: white; font-family: 'Roboto Mono', monospace; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
         
-        body { 
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            margin: 0; padding: 10px; transition: 0.5s; background: #1a1a1a; color: white; min-height: 100vh;
-            line-height: 1.4;
-        }
-
-        .container { max-width: 500px; margin: auto; }
+        /* LOGIN REPLICATO */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
+        .iasq-logo { font-family: 'Creepster', cursive; font-size: 100px; color: #d1d1d1; text-shadow: 0 0 25px var(--red); margin-bottom: 20px; }
+        .login-card { background: var(--panel); padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); width: 340px; border: 1px solid var(--border); text-align: center; }
         
-        /* BOX INTRODUTTIVO COMPATTO */
-        .intro-box { 
-            padding: 15px; border-radius: 18px; margin-bottom: 15px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            background: rgba(255,255,255,0.05);
-            font-size: 13.5px;
-        }
-        .intro-box h2 { margin: 0 0 8px 0; font-size: 1.15em; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; }
-        .intro-list { list-style: none; padding: 0; margin: 8px 0; }
-        .intro-list li { margin-bottom: 3px; }
-        
-        .dev-note-title { font-weight: bold; margin-top: 10px; display: block; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; font-size: 0.9em; }
-        .dev-note-text { font-size: 0.8em; opacity: 0.75; font-style: italic; display: block; margin-top: 2px; }
+        select, input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid var(--border); color: white; border-radius: 8px; font-family: 'Roboto Mono', monospace; box-sizing: border-box; }
+        .btn-main { background: var(--red); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-main:hover { background: #ff2e63; }
 
-        /* LOGIN */
-        .login-box { 
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); text-align: center; 
-            margin-top: 15vh; border-radius: 25px; padding: 30px 15px; border: 1px solid rgba(255,255,255,0.2); 
-        }
-        .login-box h1 { font-size: 2em; margin-bottom: 5px; }
-        input { padding: 14px; width: 90%; border-radius: 12px; border: none; margin: 15px 0; font-size: 18px; text-align: center; }
-        button.primary-btn { border: none; padding: 14px 35px; border-radius: 12px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        /* BUNKER SCREEN */
+        #bunker-screen { display: none; width: 100%; padding: 20px; max-width: 1100px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .skull-notif { background: rgba(233, 69, 96, 0.15); border: 1.5px solid var(--red); padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; }
+        .alunno-title { font-family: 'Creepster', cursive; font-size: 32px; color: var(--red); margin: 15px 0; }
 
-        /* UI */
-        .top-bar { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .btn-tiny { padding: 8px 15px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 10px; color: white; background: rgba(0,0,0,0.4); }
+        /* CALENDARIO IDENTICO A calendario_bello.png */
+        .calendar-wrap { background: var(--panel); border-radius: 15px; border: 1px solid var(--border); padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { color: var(--gray); padding: 10px; font-size: 13px; text-transform: lowercase; font-weight: normal; }
+        td { height: 110px; border: 0.5px solid var(--border); vertical-align: top; padding: 5px; cursor: pointer; position: relative; }
+        td.past { background: rgba(0,0,0,0.2); cursor: default; }
+        td.today { border: 1.5px solid var(--red); background: rgba(233, 69, 96, 0.05); }
+        .day-label { float: right; font-size: 12px; color: var(--gray); margin: 3px; }
 
-        .season-tab { padding: 18px; border-radius: 15px; margin-top: 10px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-        .episode-list { display: none; padding: 5px; border-radius: 0 0 15px 15px; margin-top: -5px; background: rgba(255,255,255,0.05); }
-        .episode-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; }
-        
-        video { width: 100%; border-radius: 12px; margin-top: 8px; display: none; background: #000; }
+        .event-tag { font-size: 9px; padding: 3px 6px; border-radius: 4px; margin-top: 5px; font-weight: bold; display: block; overflow: hidden; text-overflow: ellipsis; }
+        .tag-interrogazione { background: var(--red); color: white; }
+        .tag-verifica { background: var(--blue); color: white; }
+        .tag-altro { background: #f1c40f; color: black; }
 
-        /* TEMI */
-        body.theme-1.logged-in { background: #1e1b4b; } body.theme-1 .season-tab, body.theme-1 .intro-box { background: linear-gradient(135deg, #4338ca, #6d28d9); color: white; }
-        body.theme-2.logged-in { background: #2e1065; } body.theme-2 .season-tab, body.theme-2 .intro-box { background: linear-gradient(135deg, #7c3aed, #4c1d95); color: white; }
-        body.theme-3.logged-in { background: #2d0630; } body.theme-3 .season-tab, body.theme-3 .intro-box { background: linear-gradient(135deg, #701a75, #d946ef); color: white; }
-        body.theme-4.logged-in { background: #083344; } body.theme-4 .season-tab, body.theme-4 .intro-box { background: linear-gradient(135deg, #0e7490, #0891b2); color: white; }
-        body.theme-5.logged-in { background: #042f2e; } body.theme-5 .season-tab, body.theme-5 .intro-box { background: linear-gradient(135deg, #0f766e, #14b8a6); color: white; }
-
-        body.logged-in button.primary-btn { background: currentColor; filter: contrast(1.2) brightness(0.8); color: white; }
+        /* MODALI BELLI */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 999; }
+        .modal-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel); border: 2px solid var(--red); width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; z-index: 1000; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
     </style>
 </head>
-<body id="body-tag">
+<body>
 
-    <div class="container">
-        <div id="pin-section" class="login-box">
-            <h1>SU_Streaming</h1>
-            <p style="opacity:0.7; font-size: 0.9em;">Inserisci il PIN per accedere</p>
-            <input type="tel" id="pin-input" maxlength="8" placeholder="****">
-            <br>
-            <button class="primary-btn" onclick="checkPin()">Accedi</button>
-        </div>
-
-        <div id="main-app" style="display:none;">
-            <div class="top-bar">
-                <button class="btn-tiny" onclick="resetPin()">⚙️ PIN</button>
-                <button class="btn-tiny" id="theme-btn" style="background: white; color: black;">🎨 COLORE</button>
-            </div>
-
-            <div class="intro-box">
-                <h2>Steven Universe: The Complete Collection ✨</h2>
-                Questa web app nasce dal desiderio di raccogliere in un unico posto l'intero universo creato da Rebecca Sugar. Al suo interno troverai:
-                <ul class="intro-list">
-                    <li>💎 Tutte le stagioni della serie originale Steven Universe</li>
-                    <li>🎬 Steven Universe: Il Film</li>
-                    <li>🌟 Steven Universe Future</li>
-                </ul>
-                <span class="dev-note-title">Nota dello sviluppatore:</span>
-                <span class="dev-note-text">Essendo il mio primo progetto nel campo dello sviluppo web, l'applicazione potrebbe presentare qualche piccola imperfezione tecnica. È un lavoro in continua evoluzione che mi è servito per testare e migliorare le mie competenze.
-                <br>Sviluppato con passione da Lorenzo Reveglia.</span>
-            </div>
-
-            <div id="seasons-container"></div>
+    <div id="login-screen">
+        <div class="iasq-logo">IASQ</div>
+        <div class="login-card">
+            <select id="user-select"><option>CARICAMENTO DATABASE...</option></select>
+            <input type="password" id="pin-input" placeholder="PIN DI ACCESSO">
+            <button class="btn-main" onclick="tryLogin()">ENTRA NEL BUNKER</button>
         </div>
     </div>
 
+    <div id="bunker-screen">
+        <div class="header-top">
+            <button onclick="location.reload()" style="background:none; border:none; color:white; cursor:pointer; font-family:'Roboto Mono'">← ESCI</button>
+            <div class="skull-notif" onclick="openDestini()">💀 <span id="skull-count">0</span> +</div>
+            <div style="font-size:10px; color:var(--gray)">SISTEMA OPERATIVO</div>
+        </div>
+        <div class="alunno-title">ALUNNO: <span id="current-name"></span></div>
+        <div class="calendar-wrap">
+            <div class="month-header">
+                <div id="month-display" style="font-size: 24px; font-weight: bold; text-transform: lowercase;"></div>
+                <div>
+                    <button onclick="moveMonth(-1)" style="background:none; border:none; color:white; cursor:pointer; font-size:25px;"> < </button>
+                    <button onclick="moveMonth(1)" style="background:none; border:none; color:white; cursor:pointer; font-size:25px;"> > </button>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>lun</th><th>mar</th><th>mer</th><th>gio</th><th>ven</th><th>sab</th><th>dom</th></tr></thead>
+                <tbody id="calendar-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay" onclick="closeAll()"></div>
+    <div id="modal-add" class="modal-box">
+        <h2 style="font-family:'Creepster'; color:var(--red); margin:0; font-size:30px;">PIANIFICA DESTINO</h2>
+        <p id="sel-date-txt" style="font-size:11px; color:var(--gray); margin-bottom:15px;"></p>
+        
+        <label style="font-size:10px; color:var(--gray)">TIPO</label>
+        <select id="in-tipo" onchange="toggleTipo()">
+            <option value="interrogazione">Interrogazione 📝</option>
+            <option value="verifica">Verifica 📚</option>
+        </select>
+        
+        <label style="font-size:10px; color:var(--gray)">MATERIA</label>
+        <select id="in-materia" onchange="document.getElementById('in-altro').style.display=(this.value=='Altro'?'block':'none')">
+            <option value="Matematica">Matematica</option><option value="Fisica">Fisica</option><option value="Inglese">Inglese</option><option value="Diritto">Diritto</option><option value="TTRG">TTRG</option><option value="Scienze">Scienze</option><option value="Storia">Storia</option><option value="Altro">-- ALTRO --</option>
+        </select>
+        <input type="text" id="in-altro" placeholder="Scrivi materia..." style="display:none;">
+
+        <div id="box-alunni">
+            <label style="font-size:10px; color:var(--gray)">BERSAGLI</label>
+            <div style="display:flex; gap:5px;">
+                <select id="sel-alunno-list" style="flex:2;"><option value="">Aggiungi...</option></select>
+                <input type="number" id="rand-n" placeholder="N°" style="flex:1;">
+                <button onclick="estrai()" style="background:var(--blue); border:none; color:white; border-radius:8px; padding:0 15px; cursor:pointer;">🎲</button>
+            </div>
+        </div>
+        <textarea id="in-final" placeholder="Chi capita capita..." rows="2"></textarea>
+        <textarea id="in-desc" placeholder="Descrizione (opzionale)" rows="2"></textarea>
+        
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-main" id="btn-save" onclick="salva()">CONFERMA</button>
+            <button class="btn-main" style="background:#242c42;" onclick="closeAll()">ANNULLA</button>
+        </div>
+    </div>
+
+    <div id="modal-list" class="modal-box">
+        <h2 style="font-family:'Creepster'; color:var(--red); font-size:30px;">I TUOI DESTINI</h2>
+        <div id="destini-content" style="max-height:350px; overflow-y:auto; padding-right:5px;"></div>
+        <button class="btn-main" style="background:#242c42; margin-top:20px;" onclick="closeAll()">CHIUDI</button>
+    </div>
+
     <script>
-        // Script per attivare il Service Worker (necessario per nascondere la barra URL)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registrato!', reg))
-                .catch(err => console.log('Errore Service Worker', err));
-            });
+        // *** METTI IL TUO URL QUI ***
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxBD-5Cc2nVUPTTdM2if2jRvNfezWklU1uCFOENzPWDyVMKL1_BfRUMqzqfwokgQ8gyQ/exec";
+        
+        let db = { events: [], pins: {} };
+        let curM = new Date();
+        let selD = "";
+        let isLogged = false;
+
+        // CARICAMENTO INIZIALE
+        async function sync() {
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=getInitialData`);
+                db = await r.json();
+                const s1 = document.getElementById('user-select');
+                const s2 = document.getElementById('sel-alunno-list');
+                const names = Object.keys(db.pins).sort();
+                s1.innerHTML = '<option value="">Seleziona Soldato</option>';
+                s2.innerHTML = '<option value="">Aggiungi Alunno</option>';
+                names.forEach(n => {
+                    s1.innerHTML += `<option value="${n}">${n}</option>`;
+                    s2.innerHTML += `<option value="${n}">${n}</option>`;
+                });
+                if(isLogged) render();
+            } catch(e) { console.error("Errore sincronizzazione iniziale"); }
         }
 
-        const DATABASE_VIDEO = [
-            { name: "01x01 Gemma lucente", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987419/Steven.Universe.01x01.Gemma.Lucente.Gem.Glow_jxffcb.mp4" },
-            { name: "01x34 Cocomerino", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987309/Steven.Universe.01x34.Cocomerino.Il.Cocomero.Bambino.Waterme_bka5cy.mp4" },
-            { name: "01x38 Il Test", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987305/Steven.Universe.01x38.Il.Test.The.Test.2345485.mkv.mp4_at_St_bdoiwl.mp4" },
-            { name: "01x43 Capodanno", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987518/Steven.Universe.01x43.Capodanno.Maximum.Capacity.2345490.mkv_r5wmcl.mp4" },
-            { name: "01x46 Libro aperto", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987412/Steven.Universe.01x46.Lib.Aperto.Open.Book.2345493.mkv_f0e8of.mp4" },
-            { name: "01x47 Una magica amicizia", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987413/Steven.Universe.01x47.Magica.Amicizia.Shirt.Club.2345494.mkv_o39gex.mp4" },
-            { name: "01x48 Una storia per Steven", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987422/Steven.Universe.01x48.Una.Storia.Per.Steven.Story.For.Steven.2345495.mkv_wukfdf.mp4" },
-            { name: "01x49 Il messaggio", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987324/Steven.Universe.01x49.Il.Messaggio.The.Message.2345496.mkv_e367cl.mp4" },
-            { name: "01x50 Potere politico", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987522/Steven.Universe.01x50.Potere.Politico.Political.Power.2345497.mkv_qg318b.mp4" },
-            { name: "01x51 Il ritorno", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987525/Steven.Universe.01x51.Il.Ritorno.The.Return.2345498.mkv_vuvndy.mp4" },
-            { name: "01x52 Fuggitivi", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772987528/Steven.Universe.01x52.Fuggitivi.Jail.Break.2345499.mkv_e9zshk.mp4" },
-            { name: "03x01 L'isola dei super cocomeri", url: "https://res.cloudinary.com/dcsvok2jp/video/upload/v1772970695/Steven.Universe.03x01.L.Isola.Dei.Super.Cocomeri.Super.Water_bpeolj.mp4" }
-        ];
+        window.onload = sync;
 
-        let currentTheme = parseInt(localStorage.getItem('user_theme')) || 1;
-        document.body.classList.add(`theme-${currentTheme}`);
+        function tryLogin() {
+            const u = document.getElementById('user-select').value;
+            const p = document.getElementById('pin-input').value;
+            if (db.pins[u] && db.pins[u] === p) {
+                isLogged = true;
+                document.getElementById('login-screen').style.display='none';
+                document.getElementById('bunker-screen').style.display='block';
+                document.getElementById('current-name').innerText = u.toUpperCase();
+                render();
+            } else { alert("ACCESSO NEGATO: PIN ERRATO"); }
+        }
 
-        document.getElementById('theme-btn').onclick = () => {
-            document.body.classList.remove(`theme-${currentTheme}`);
-            currentTheme = (currentTheme % 5) + 1;
-            document.body.classList.add(`theme-${currentTheme}`);
-            localStorage.setItem('user_theme', currentTheme);
+        function render() {
+            const body = document.getElementById('calendar-body');
+            body.innerHTML = '';
+            const y = curM.getFullYear(), m = curM.getMonth();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('month-display').innerText = new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(curM);
+            
+            let first = new Date(y, m, 1).getDay();
+            first = first === 0 ? 6 : first - 1;
+            const days = new Date(y, m + 1, 0).getDate();
+
+            let d = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    let cell = document.createElement('td');
+                    if (i === 0 && j < first) {
+                        cell.classList.add('past');
+                    } else if (d <= days) {
+                        const dStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        cell.innerHTML = `<span class="day-label">${d}</span>`;
+                        if (dStr < today) cell.classList.add('past');
+                        if (dStr === today) cell.classList.add('today');
+                        
+                        db.events.filter(e => e.data && e.data.startsWith(dStr)).forEach(e => {
+                            const c = e.materia_special ? 'tag-altro' : `tag-${e.tipo}`;
+                            cell.innerHTML += `<div class="event-tag ${c}">${e.materia.toUpperCase()}</div>`;
+                        });
+
+                        if (dStr >= today) cell.onclick = (e) => { selD = dStr; openAdd(); };
+                        d++;
+                    }
+                    row.appendChild(cell);
+                }
+                body.appendChild(row);
+                if (d > days) break;
+            }
+            document.getElementById('skull-count').innerText = db.events.length;
+        }
+
+        function openAdd() { 
+            document.getElementById('sel-date-txt').innerText = "OPERAZIONE DEL: " + selD;
+            document.getElementById('modal-add').style.display='block';
+            document.getElementById('modal-overlay').style.display='block';
+        }
+
+        function toggleTipo() {
+            const isV = document.getElementById('in-tipo').value === 'verifica';
+            document.getElementById('box-alunni').style.display = isV ? 'none' : 'block';
+            document.getElementById('in-final').value = isV ? "TUTTA LA CLASSE" : "";
+        }
+
+        document.getElementById('sel-alunno-list').onchange = function() {
+            const f = document.getElementById('in-final');
+            f.value = f.value ? f.value + ", " + this.value : this.value;
         };
 
-        function checkPin() {
-            const input = document.getElementById('pin-input').value;
-            const saved = localStorage.getItem('user_pin') || "1234";
-            if (input === saved) {
-                document.getElementById('pin-section').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                document.body.classList.add('logged-in');
-                renderizzaStagioni();
-            } else { alert("PIN Errato!"); }
+        function estrai() {
+            const n = parseInt(document.getElementById('rand-n').value);
+            const names = Object.keys(db.pins);
+            if(!n || n < 1) return;
+            let res = [];
+            while(res.length < n && res.length < names.length) {
+                let r = names[Math.floor(Math.random()*names.length)];
+                if(!res.includes(r)) res.push(r);
+            }
+            document.getElementById('in-final').value = res.join(', ');
         }
 
-        function resetPin() { 
-            let nuovo = prompt("Nuovo PIN:");
-            if(nuovo) { localStorage.setItem('user_pin', nuovo); alert("PIN aggiornato!"); }
-        }
+        // SALVATAGGIO ANTI-LOGOUT (USA FETCH SILENZIOSA)
+        async function salva() {
+            const btn = document.getElementById('btn-save');
+            btn.innerText = "SINCRO IN CORSO..."; btn.disabled = true;
 
-        function renderizzaStagioni() {
-            const container = document.getElementById('seasons-container');
-            container.innerHTML = "";
-            const stagioni = [{id:"01",n:"Stagione 1"},{id:"03",n:"Stagione 3"}];
-            stagioni.forEach(cat => {
-                const filtrati = DATABASE_VIDEO.filter(v => v.name.includes(cat.id + "x"));
-                if (filtrati.length === 0) return;
-                const tab = document.createElement('div');
-                tab.className = 'season-tab';
-                tab.innerHTML = `<span>📂 ${cat.n}</span> <span>${filtrati.length} ep.</span>`;
-                tab.onclick = () => {
-                    const list = tab.nextElementSibling;
-                    const isVis = list.style.display === 'block';
-                    document.querySelectorAll('.episode-list').forEach(l => l.style.display = 'none');
-                    list.style.display = isVis ? 'none' : 'block';
-                };
-                const list = document.createElement('div');
-                list.className = 'episode-list';
-                filtrati.forEach((vid) => {
-                    const item = document.createElement('div');
-                    item.className = 'episode-item';
-                    let num = vid.name.split('x')[1]?.split(' ')[0];
-                    let titolo = vid.name.split(' ').slice(1).join(' ');
-                    item.innerHTML = `🎬 <span style="opacity:0.6; font-size: 0.8em;">Ep. ${parseInt(num)}</span> ${titolo}`;
-                    const vTag = document.createElement('video');
-                    vTag.controls = true; vTag.src = vid.url; vTag.setAttribute('playsinline', '');
-                    item.onclick = (e) => {
-                        e.stopPropagation();
-                        const isVis = vTag.style.display === 'block';
-                        document.querySelectorAll('video').forEach(v => { v.style.display='none'; v.pause(); });
-                        vTag.style.display = isVis ? 'none' : 'block';
-                    };
-                    item.appendChild(vTag);
-                    list.appendChild(item);
-                });
-                container.appendChild(tab); container.appendChild(list);
+            let mat = document.getElementById('in-materia').value;
+            let sp = false;
+            if(mat === 'Altro') { mat = document.getElementById('in-altro').value || 'Altro'; sp = true; }
+
+            const payload = {
+                action: 'saveEvent',
+                event: {
+                    id: Date.now(),
+                    data: selD,
+                    tipo: document.getElementById('in-tipo').value,
+                    materia: mat,
+                    alunno: document.getElementById('in-final').value,
+                    desc: document.getElementById('in-desc').value,
+                    materia_special: sp
+                }
+            };
+
+            // TRUCCO: Invio dati senza aspettare la risposta CORS che blocca tutto
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            }).then(() => {
+                // Chiudiamo e resettiamo senza ricaricare la pagina
+                setTimeout(() => {
+                    closeAll();
+                    btn.innerText = "CONFERMA"; btn.disabled = false;
+                    sync(); // Ricarica i dati dal database in background
+                }, 1000);
+            }).catch(err => {
+                alert("Errore di rete, ma i dati potrebbero essere stati inviati.");
+                btn.disabled = false;
             });
         }
+
+        function openDestini() {
+            const c = document.getElementById('destini-content'); c.innerHTML = '';
+            const future = db.events.filter(e => e.data >= new Date().toISOString().split('T')[0]).sort((a,b)=>a.data.localeCompare(b.data));
+            if(future.length === 0) c.innerHTML = "<p style='color:var(--gray)'>Nessun destino imminente...</p>";
+            future.forEach(e => {
+                c.innerHTML += `
+                <div style="background:#1e253a; border-left:4px solid var(--red); padding:12px; margin-bottom:12px; border-radius:10px;">
+                    <b style="color:var(--red); font-size:16px;">${e.materia.toUpperCase()}</b><br>
+                    <div style="font-size:12px; margin-top:5px;">👤 ${e.alunno}</div>
+                    <div style="font-size:11px; color:var(--gray); margin-top:3px;">📅 ${e.data} (${e.tipo})</div>
+                    ${e.desc ? `<div style="font-size:11px; color:#fff; margin-top:8px; border-top:1px solid #333; padding-top:5px;">${e.desc}</div>` : ''}
+                </div>`;
+            });
+            document.getElementById('modal-list').style.display='block';
+            document.getElementById('modal-overlay').style.display='block';
+        }
+
+        function closeAll() {
+            document.getElementById('modal-add').style.display='none';
+            document.getElementById('modal-list').style.display='none';
+            document.getElementById('modal-overlay').style.display='none';
+        }
+
+        function moveMonth(v) { curM.setMonth(curM.getMonth()+v); render(); }
     </script>
 </body>
 </html>
