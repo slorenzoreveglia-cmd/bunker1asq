@@ -1,0 +1,20 @@
+{
+  "name": "SU_Streaming",
+  "short_name": "SU_Streaming",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dcsvok2jp/image/upload/v1773007380/Logo_2_nmufb2.jpg",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://res.cloudinary.com/dcsvok2jp/image/upload/v1773007380/Logo_2_nmufb2.jpg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
